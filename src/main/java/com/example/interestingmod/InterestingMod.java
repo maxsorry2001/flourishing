@@ -5,7 +5,13 @@ import com.example.interestingmod.modeffect.ModEffects;
 import com.mojang.logging.LogUtils;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.damagesource.DamageSources;
+import net.minecraft.world.damagesource.DamageType;
+import net.minecraft.world.damagesource.DamageTypes;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -22,11 +28,13 @@ import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
+import net.neoforged.neoforge.event.entity.living.LivingHurtEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
 import org.slf4j.Logger;
 
 import static com.example.interestingmod.items.ModItems.ITEMS;
+import static net.minecraft.world.damagesource.DamageTypes.FLY_INTO_WALL;
 
 // The value here should match an entry in the META-INF/mods.toml file
 @Mod(InterestingMod.MODID)
@@ -91,8 +99,8 @@ public class InterestingMod
                     else {
                         player.getInventory().removeItem(itemStackMain);
                         player.getInventory().removeItem(itemStackOff);
-                        player.setItemInHand(InteractionHand.MAIN_HAND,itemStackPotion);
-                        player.setItemInHand(InteractionHand.OFF_HAND,itemStackBucket);
+                        player.setItemInHand(InteractionHand.MAIN_HAND, itemStackPotion);
+                        player.setItemInHand(InteractionHand.OFF_HAND, itemStackBucket);
                     }
                 }
                 else {
@@ -119,7 +127,15 @@ public class InterestingMod
             level.playSound(player, player.getX(), player.getY(), player.getZ(), SoundEvents.BUCKET_FILL_LAVA, SoundSource.PLAYERS);
         }
     }
-
+    @SubscribeEvent
+    public void test(LivingHurtEvent event){
+        LivingEntity livingEntity = event.getEntity();
+        DamageSource damageSource = event.getSource();
+        if(damageSource.is(FLY_INTO_WALL)){
+            livingEntity.level().explode(null, livingEntity.getX(), livingEntity.getY(), livingEntity.getZ(), 3, false, Level.ExplosionInteraction.TNT);
+            event.setAmount(0);
+        }
+    }
     // You can use SubscribeEvent and let the Event Bus discover methods to call
     @SubscribeEvent
     public void onServerStarting(ServerStartingEvent event)
