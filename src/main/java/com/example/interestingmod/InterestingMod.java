@@ -5,9 +5,7 @@ import com.example.interestingmod.modeffect.ModEffects;
 import com.mojang.logging.LogUtils;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.stats.Stats;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -24,7 +22,6 @@ import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
-import net.neoforged.neoforge.event.entity.living.LivingEntityUseItemEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
 import org.slf4j.Logger;
@@ -73,25 +70,53 @@ public class InterestingMod
         Player player = event.getEntity();
         Level level = player.level();
         if(!level.isClientSide() && event.getHand() == InteractionHand.MAIN_HAND){
-            Item item1 = player.getMainHandItem().getItem();
-            Item item2 = player.getOffhandItem().getItem();
-            if((item1 == Items.LAVA_BUCKET && item2 == Items.GLASS_BOTTLE) ||
-                    (item1 == Items.GLASS_BOTTLE && item2 == Items.LAVA_BUCKET)){
-                ItemStack itemStack1 = new ItemStack(Items.POTION);
-                ItemStack itemStack2 = new ItemStack(Items.BUCKET);
-                PotionUtils.setPotion(itemStack1 , ModPotions.LAVA.get());
-                player.getInventory().removeItem(player.getMainHandItem());
-                player.getInventory().removeItem(player.getOffhandItem());
-                if(item1 == Items.GLASS_BOTTLE){
-                    player.setItemInHand(InteractionHand.MAIN_HAND, itemStack1);
-                    player.setItemInHand(InteractionHand.OFF_HAND, itemStack2);
+            ItemStack itemStackMain = player.getMainHandItem();
+            ItemStack itemStackOff = player.getOffhandItem();
+            Item itemMain = itemStackMain.getItem();
+            Item itemOff = itemStackOff.getItem();
+            if((itemMain == Items.LAVA_BUCKET && itemOff == Items.GLASS_BOTTLE) ||
+                    (itemMain == Items.GLASS_BOTTLE && itemOff == Items.LAVA_BUCKET)){
+                ItemStack itemStackPotion = new ItemStack(Items.POTION);
+                ItemStack itemStackBucket = new ItemStack(Items.BUCKET);
+                PotionUtils.setPotion(itemStackPotion , ModPotions.LAVA.get());
+                if(itemMain == Items.GLASS_BOTTLE){
+                    if(itemStackMain.getCount() > 1){
+                        itemStackMain.setCount(itemStackMain.getCount() - 1);
+                        player.getInventory().removeItem(itemStackMain);
+                        player.getInventory().removeItem(itemStackOff);
+                        player.setItemInHand(InteractionHand.MAIN_HAND, itemStackMain);
+                        player.setItemInHand(InteractionHand.OFF_HAND, itemStackBucket);
+                        player.addItem(itemStackPotion);
+                    }
+                    else {
+                        player.getInventory().removeItem(itemStackMain);
+                        player.getInventory().removeItem(itemStackOff);
+                        player.setItemInHand(InteractionHand.MAIN_HAND,itemStackPotion);
+                        player.setItemInHand(InteractionHand.OFF_HAND,itemStackBucket);
+                    }
                 }
                 else {
-                    player.setItemInHand(InteractionHand.MAIN_HAND, itemStack2);
-                    player.setItemInHand(InteractionHand.OFF_HAND, itemStack1);
+                    if(itemStackOff.getCount() > 1){
+                        itemStackOff.setCount(itemStackOff.getCount() - 1);
+                        player.getInventory().removeItem(itemStackMain);
+                        player.getInventory().removeItem(itemStackOff);
+                        player.setItemInHand(InteractionHand.OFF_HAND, itemStackOff);
+                        player.setItemInHand(InteractionHand.MAIN_HAND, itemStackBucket);
+                        player.addItem(itemStackPotion);
+                    }
+                    else {
+                        player.getInventory().removeItem(itemStackMain);
+                        player.getInventory().removeItem(itemStackOff);
+                        player.setItemInHand(InteractionHand.OFF_HAND,itemStackPotion);
+                        player.setItemInHand(InteractionHand.MAIN_HAND,itemStackBucket);
+                    }
                 }
-                level.playSound(player, player.getX(), player.getY(), player.getZ(), SoundEvents.BUCKET_FILL_LAVA, SoundSource.PLAYERS);
             }
+        }
+        if(level.isClientSide() && event.getHand() == InteractionHand.MAIN_HAND
+                && ((player.getMainHandItem().getItem() == Items.GLASS_BOTTLE && player.getOffhandItem().getItem() == Items.LAVA_BUCKET)
+                || (player.getMainHandItem().getItem() == Items.LAVA_BUCKET && player.getOffhandItem().getItem() == Items.GLASS_BOTTLE))){
+            level.playSound(player, player.getX(), player.getY(), player.getZ(), SoundEvents.BUCKET_FILL_LAVA, SoundSource.PLAYERS);
         }
     }
 
