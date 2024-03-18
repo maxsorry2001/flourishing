@@ -1,18 +1,17 @@
 package com.example.interestingmod;
 
+import com.example.interestingmod.items.ModItems;
 import com.example.interestingmod.items.potion.ModPotions;
 import com.example.interestingmod.modeffect.ModEffects;
 import com.mojang.logging.LogUtils;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.damagesource.DamageSources;
-import net.minecraft.world.damagesource.DamageType;
-import net.minecraft.world.damagesource.DamageTypes;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -28,12 +27,14 @@ import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
+import net.neoforged.neoforge.event.entity.living.LivingFallEvent;
 import net.neoforged.neoforge.event.entity.living.LivingHurtEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
 import org.slf4j.Logger;
 
 import static com.example.interestingmod.items.ModItems.ITEMS;
+import static net.minecraft.world.damagesource.DamageTypes.FALLING_ANVIL;
 import static net.minecraft.world.damagesource.DamageTypes.FLY_INTO_WALL;
 
 // The value here should match an entry in the META-INF/mods.toml file
@@ -66,12 +67,14 @@ public class InterestingMod
 
     private void commonSetup(final FMLCommonSetupEvent event)
     {
-
     }
 
     // Add the example block item to the building blocks tab
     private void addCreative(BuildCreativeModeTabContentsEvent event)
     {
+        if(event.getTabKey() == CreativeModeTabs.COMBAT){
+            event.accept(ModItems.SAFETY_HELMET.get());
+        }
     }
     @SubscribeEvent
     private void lava_potion_get(PlayerInteractEvent.RightClickItem event){
@@ -131,9 +134,23 @@ public class InterestingMod
     public void test(LivingHurtEvent event){
         LivingEntity livingEntity = event.getEntity();
         DamageSource damageSource = event.getSource();
-        if(damageSource.is(FLY_INTO_WALL)){
-            livingEntity.level().explode(null, livingEntity.getX(), livingEntity.getY(), livingEntity.getZ(), 3, false, Level.ExplosionInteraction.TNT);
-            event.setAmount(0);
+        Level level = livingEntity.level();
+        boolean a = livingEntity.isFallFlying();
+        if(livingEntity.getItemBySlot(EquipmentSlot.HEAD).getItem() == ModItems.SAFETY_HELMET.get()){
+            if(damageSource.is(FLY_INTO_WALL)){
+                level.explode(null, livingEntity.getX(), livingEntity.getY(), livingEntity.getZ(), 3, false, Level.ExplosionInteraction.TNT);
+                event.setAmount(0);
+            }
+            else if (damageSource.is(FALLING_ANVIL))
+                event.setAmount(0);
+            livingEntity.getItemBySlot(EquipmentSlot.HEAD).hurtAndBreak(5, livingEntity, p -> p.broadcastBreakEvent(EquipmentSlot.HEAD));
+        }
+    }
+    @SubscribeEvent
+    public void test2(LivingFallEvent event){
+        LivingEntity livingEntity = event.getEntity();
+        if(livingEntity.getItemBySlot(EquipmentSlot.HEAD).getItem() == ModItems.SAFETY_HELMET.get() && livingEntity.isFallFlying()){
+            event.setDamageMultiplier(0);
         }
     }
     // You can use SubscribeEvent and let the Event Bus discover methods to call
@@ -141,7 +158,6 @@ public class InterestingMod
     public void onServerStarting(ServerStartingEvent event)
     {
     }
-
     // You can use EventBusSubscriber to automatically register all static methods in the class annotated with @SubscribeEvent
     @Mod.EventBusSubscriber(modid = MODID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
     public static class ClientModEvents
