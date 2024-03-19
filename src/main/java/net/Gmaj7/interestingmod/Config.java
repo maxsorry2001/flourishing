@@ -1,4 +1,4 @@
-package com.example.interestingmod;
+package net.Gmaj7.interestingmod;
 
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;

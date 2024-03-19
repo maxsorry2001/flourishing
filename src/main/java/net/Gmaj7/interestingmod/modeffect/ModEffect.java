@@ -1,4 +1,4 @@
-package com.example.interestingmod.modeffect;
+package net.Gmaj7.interestingmod.modeffect;
 
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;

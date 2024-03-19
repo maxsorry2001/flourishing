@@ -1,6 +1,6 @@
-package com.example.interestingmod.modeffect;
+package net.Gmaj7.interestingmod.modeffect;
 
-import com.example.interestingmod.InterestingMod;
+import net.Gmaj7.interestingmod.InterestingMod;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;

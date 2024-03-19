@@ -1,7 +1,7 @@
-package com.example.interestingmod.items.potion;
+package net.Gmaj7.interestingmod.items.potion;
 
-import com.example.interestingmod.InterestingMod;
-import com.example.interestingmod.modeffect.ModEffects;
+import net.Gmaj7.interestingmod.InterestingMod;
+import net.Gmaj7.interestingmod.modeffect.ModEffects;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.item.alchemy.Potion;
