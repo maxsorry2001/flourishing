@@ -11,9 +11,10 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 import java.util.function.Supplier;
 
 public class ModPotions {
-    public static final DeferredRegister<Potion> POTION
+    public static final DeferredRegister<Potion> POTIONS
             = DeferredRegister.create(Registries.POTION, InterestingMod.MODID);
-    public static final Supplier<Potion> LAVA = POTION.register("lava_potion",
+    public static final Supplier<Potion> LAVA = POTIONS.register("lava_potion",
             () -> new Potion(new MobEffectInstance(ModEffects.LAVA_BODY.get(), 9600)));
-    public static void register(IEventBus eventBus){POTION.register(eventBus);}
+    public static void register(IEventBus eventBus){
+        POTIONS.register(eventBus);}
 }

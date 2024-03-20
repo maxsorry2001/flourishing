@@ -1,0 +1,13 @@
+{
+  "item.minecraft.potion.effect.lava_potion": "Lava bottle",
+  "item.minecraft.splash_potion.effect.lava_potion": "Splash Lava bottle",
+  "item.minecraft.lingering_potion.effect.lava_potion": "Lingering Lava bottle",
+
+  "item.interestingmod.ancient_ingot_knife": "Ancient ingot knife",
+  "item.interestingmod.safety_helmet": "Safety helmet",
+  "item.interestingmod.half_lava_bucket": "Half a bucket of lava",
+
+  "effect.interestingmod.lava_body": "Lava body",
+
+  "enchantment.interestingmod.army_destroyer": "Army destroyer"
+}

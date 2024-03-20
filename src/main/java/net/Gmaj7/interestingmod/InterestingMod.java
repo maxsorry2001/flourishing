@@ -1,9 +1,10 @@
 package net.Gmaj7.interestingmod;
 
+import com.mojang.logging.LogUtils;
+import net.Gmaj7.interestingmod.enchantment.ModEnchantments;
 import net.Gmaj7.interestingmod.items.ModItems;
 import net.Gmaj7.interestingmod.items.potion.ModPotions;
 import net.Gmaj7.interestingmod.modeffect.ModEffects;
-import com.mojang.logging.LogUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -17,7 +18,6 @@ import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.alchemy.PotionBrewing;
 import net.minecraft.world.item.alchemy.PotionUtils;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
@@ -60,6 +60,7 @@ public class InterestingMod
         ITEMS.register(modEventBus);
         ModEffects.register(modEventBus);
         ModPotions.register(modEventBus);
+        ModEnchantments.register(modEventBus);
 
         // Register the item to a creative tab
         modEventBus.addListener(this::addCreative);
@@ -76,6 +77,7 @@ public class InterestingMod
     {
         if(event.getTabKey() == CreativeModeTabs.COMBAT){
             event.accept(ModItems.SAFETY_HELMET.get());
+            event.accept(ModItems.ANCIENT_INGOT_KNIFE.get());
         }
         if(event.getTabKey() == CreativeModeTabs.TOOLS_AND_UTILITIES){
             event.accept(ModItems.HALF_LAVA_BUCKET.get());
