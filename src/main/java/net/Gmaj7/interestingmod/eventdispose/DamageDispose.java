@@ -83,7 +83,7 @@ public class DamageDispose {
                     if(phand > thand)
                         event.setAmount(event.getAmount() + target.getMaxHealth() * 0.1F);
                 }
-                if(((LivingEntity) source).hasEffect(ModEffects.WIND.get())){
+                if(((LivingEntity) source).hasEffect(ModEffects.WINE.get())){
                     event.setAmount(event.getAmount() * 2);
                 }
             }

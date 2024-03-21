@@ -3,6 +3,9 @@
   "category": "misc",
   "ingredients": [
     {"item": "minecraft:wheat"},
+    {"item": "minecraft:wheat"},
+    {"item": "minecraft:wheat"},
+    {"item": "minecraft:wheat"},
     {"item": "interestingmod:wine_jars"}
   ],
   "result": {

@@ -19,7 +19,7 @@ public class ModItems {
     public static final Supplier<Item> ANCIENT_INGOT_KNIFE = ITEMS.register("ancient_ingot_knife",
             () -> new AncientIngotKnife(new Item.Properties().durability(300)));
     public static final Supplier<Item> WINE = ITEMS.register("wine",
-            () -> new Item(new Item.Properties().food(ModFoods.WIND)));
+            () -> new WineItem(new Item.Properties().food(ModFoods.WIND).stacksTo(16)));
     public static final Supplier<Item> WINE_JARS = ITEMS.register("wine_jars",
             () -> new Item(new Item.Properties()));
 }
