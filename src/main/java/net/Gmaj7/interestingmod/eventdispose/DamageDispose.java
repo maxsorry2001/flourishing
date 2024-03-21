@@ -1,6 +1,8 @@
-package net.Gmaj7.interestingmod.enchantment;
+package net.Gmaj7.interestingmod.eventdispose;
 
 import net.Gmaj7.interestingmod.InterestingMod;
+import net.Gmaj7.interestingmod.enchantment.ModEnchantments;
+import net.Gmaj7.interestingmod.modeffect.ModEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
@@ -16,7 +18,7 @@ import net.neoforged.neoforge.event.entity.living.LivingAttackEvent;
 import net.neoforged.neoforge.event.entity.living.LivingHurtEvent;
 
 @Mod.EventBusSubscriber(modid = InterestingMod.MODID)
-public class ArmyDestroyerDispose {
+public class DamageDispose {
     @SubscribeEvent
     public static void remove(LivingAttackEvent event) {
         if (!event.getEntity().level().isClientSide()) {
@@ -79,7 +81,10 @@ public class ArmyDestroyerDispose {
                             thand ++;
                     }
                     if(phand > thand)
-                        event.setAmount(event.getAmount() + target.getMaxHealth() * 0.25F);
+                        event.setAmount(event.getAmount() + target.getMaxHealth() * 0.1F);
+                }
+                if(((LivingEntity) source).hasEffect(ModEffects.WIND.get())){
+                    event.setAmount(event.getAmount() * 2);
                 }
             }
         }

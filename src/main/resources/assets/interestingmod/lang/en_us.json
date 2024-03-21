@@ -1,13 +1,18 @@
 {
+  "itemGroup.legends_of_the_three_kingdoms": "legends of the three kingdoms part",
+
   "item.minecraft.potion.effect.lava_potion": "Lava bottle",
   "item.minecraft.splash_potion.effect.lava_potion": "Splash Lava bottle",
   "item.minecraft.lingering_potion.effect.lava_potion": "Lingering Lava bottle",
 
   "item.interestingmod.ancient_ingot_knife": "Ancient ingot knife",
+  "item.interestingmod.wine_jars": "wine jars",
+  "item.interestingmod.wine": "wine",
   "item.interestingmod.safety_helmet": "Safety helmet",
   "item.interestingmod.half_lava_bucket": "Half a bucket of lava",
 
   "effect.interestingmod.lava_body": "Lava body",
+  "effect.interestingmod.wine": "wine",
 
   "enchantment.interestingmod.army_destroyer": "Army destroyer"
 }

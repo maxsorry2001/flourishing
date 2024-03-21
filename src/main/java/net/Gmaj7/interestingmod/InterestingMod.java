@@ -62,6 +62,8 @@ public class InterestingMod
         ModPotions.register(modEventBus);
         ModEnchantments.register(modEventBus);
 
+        ModCreativeModTabs.CREATIVE_MODE_TABS.register(modEventBus);
+
         // Register the item to a creative tab
         modEventBus.addListener(this::addCreative);
 
@@ -73,15 +75,7 @@ public class InterestingMod
     }
 
     // Add the example block item to the building blocks tab
-    private void addCreative(BuildCreativeModeTabContentsEvent event)
-    {
-        if(event.getTabKey() == CreativeModeTabs.COMBAT){
-            event.accept(ModItems.SAFETY_HELMET.get());
-            event.accept(ModItems.ANCIENT_INGOT_KNIFE.get());
-        }
-        if(event.getTabKey() == CreativeModeTabs.TOOLS_AND_UTILITIES){
-            event.accept(ModItems.HALF_LAVA_BUCKET.get());
-        }
+    private void addCreative(BuildCreativeModeTabContentsEvent event) {
     }
     @SubscribeEvent
     private void lava_potion_get(PlayerInteractEvent.RightClickItem event){
