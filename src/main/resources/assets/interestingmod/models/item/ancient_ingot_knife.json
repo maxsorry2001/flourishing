@@ -1,0 +1,6 @@
+{
+  "parent": "item/handheld",
+  "textures": {
+    "layer0": "interestingmod:item/ancient_ingot_knife"
+  }
+}
