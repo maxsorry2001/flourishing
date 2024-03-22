@@ -21,7 +21,7 @@ public class ModEnchantments {
     private static final Predicate<Item> predicate4 = item -> item instanceof CrossbowItem;
 
     public static Supplier<Enchantment> ARMYDESTROYER = ENCHANTMENTS.register("army_destroyer",
-        () -> new ArmyDestroyer(Enchantment.Rarity.UNCOMMON, EnchantmentCategory.create("army_destroyer_can_enchant",
+        () -> new ArmyDestroyer(Enchantment.Rarity.COMMON, EnchantmentCategory.create("army_destroyer_can_enchant",
                                 predicate1.or(predicate2).or(predicate3).or(predicate4))));
 
     public static void register(IEventBus eventBus){

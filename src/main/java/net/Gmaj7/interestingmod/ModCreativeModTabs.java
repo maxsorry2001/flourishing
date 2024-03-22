@@ -13,7 +13,7 @@ public class ModCreativeModTabs {
     public static final DeferredHolder<CreativeModeTab, CreativeModeTab> LEGENDS_OF_THE_THREE_KINGDOMS_TAB = CREATIVE_MODE_TABS.register("legends_of_the_three_kingdoms",
             () -> CreativeModeTab.builder()
                     .title(Component.translatable("itemGroup.legends_of_the_three_kingdoms"))
-                    .icon(() -> ModItems.ANCIENT_INGOT_KNIFE.get().getDefaultInstance())
+                    .icon(() -> ModItems.WINE.get().getDefaultInstance())
                     .displayItems(((pParameters, pOutput) -> {
                         pOutput.accept(ModItems.ANCIENT_INGOT_KNIFE.get());
                         pOutput.accept(ModItems.WINE_JARS.get());

@@ -15,12 +15,12 @@ import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
 
 public class AncientIngotKnife extends Item {
-    public static float BASE_DAMAGE = 7.0F;
+    public static float BASE_DAMAGE = 5.0F;
     private final Multimap<Attribute, AttributeModifier> defaultModifiers;
     public AncientIngotKnife(Properties pProperties) {
         super(pProperties);
         ImmutableMultimap.Builder<Attribute, AttributeModifier> builder = ImmutableMultimap.builder();
-        builder.put(Attributes.ATTACK_DAMAGE, new AttributeModifier(BASE_ATTACK_DAMAGE_UUID, "Tool modifier", 7.0, AttributeModifier.Operation.ADDITION));
+        builder.put(Attributes.ATTACK_DAMAGE, new AttributeModifier(BASE_ATTACK_DAMAGE_UUID, "Tool modifier", 5.0, AttributeModifier.Operation.ADDITION));
         builder.put(Attributes.ATTACK_SPEED, new AttributeModifier(BASE_ATTACK_SPEED_UUID, "Tool modifier", -2.9F, AttributeModifier.Operation.ADDITION));
         this.defaultModifiers = builder.build();
     }
@@ -36,7 +36,10 @@ public class AncientIngotKnife extends Item {
             }
         }
         if (flag) {
-            pTarget.hurt(pTarget.getLastDamageSource(), BASE_DAMAGE + 1.0F + (float) EnchantmentHelper.getTagEnchantmentLevel(Enchantments.SHARPNESS, pStack) * 0.5F + pTarget.getMaxHealth() * 0.15F);
+            float damage = (float) pAttacker.getAttribute(Attributes.ATTACK_DAMAGE).getValue() + (float) EnchantmentHelper.getTagEnchantmentLevel(Enchantments.SHARPNESS, pStack) * 0.5F + pTarget.getMaxHealth() * 0.2F;
+            int rank = EnchantmentHelper.getTagEnchantmentLevel(ModEnchantments.ARMYDESTROYER.get(),pStack);
+            if(rank == 2) damage = damage - pTarget.getMaxHealth() * 0.15F;
+            pTarget.hurt(pTarget.getLastDamageSource(), damage);
             pStack.hurtAndBreak(1, pAttacker, p_43296_ -> p_43296_.broadcastBreakEvent(EquipmentSlot.MAINHAND));
         }
         return true;

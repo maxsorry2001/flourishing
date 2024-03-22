@@ -71,21 +71,30 @@ public class DamageDispose {
                         rank = EnchantmentHelper.getTagEnchantmentLevel(ModEnchantments.ARMYDESTROYER.get(),((LivingEntity) source).getItemBySlot(EquipmentSlot.OFFHAND));
                 }
                 if (rank == 2) {
-                    EquipmentSlot[] equipmentSlot = new EquipmentSlot[]{EquipmentSlot.MAINHAND, EquipmentSlot.OFFHAND};
-                    int phand = 0;
-                    int thand = 0;
-                    for (int i = 0; i < 2; i++) {
+                    EquipmentSlot[] equipmentSlot = new EquipmentSlot[]{EquipmentSlot.MAINHAND, EquipmentSlot.OFFHAND,
+                            EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS, EquipmentSlot.FEET};
+                    int phand = 0,pbody = 0,thand = 0,tbody = 0;
+                    for (int i = 0; i < 6; i++) {
                         if(!((LivingEntity) source).getItemBySlot(equipmentSlot[i]).isEmpty())
-                            phand ++;
-                        if(!target.getItemBySlot(equipmentSlot[i]).isEmpty())
-                            thand ++;
+                        {
+                            if(i < 2) phand ++;
+                            else pbody++;
+                        }
+                        if(!target.getItemBySlot(equipmentSlot[i]).isEmpty()){
+                            if(i < 2) thand ++;
+                            else tbody++;
+                        }
                     }
-                    if(phand > thand)
-                        event.setAmount(event.getAmount() + target.getMaxHealth() * 0.1F);
+                    if(phand > thand && pbody > tbody)
+                        event.setAmount(event.getAmount() + target.getMaxHealth() * 0.15F);
                 }
                 if(((LivingEntity) source).hasEffect(ModEffects.WINE.get())){
                     event.setAmount(event.getAmount() * 2);
                 }
+            }
+            if(event.getAmount() >= target.getHealth() && target.hasEffect(ModEffects.WINE.get())){
+                target.removeEffect(ModEffects.WINE.get());
+                event.setAmount(target.getHealth() > 1 ? target.getHealth() - 1 : 1);
             }
         }
     }
