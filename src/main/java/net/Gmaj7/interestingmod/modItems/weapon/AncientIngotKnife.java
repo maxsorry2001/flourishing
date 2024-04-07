@@ -1,8 +1,8 @@
-package net.Gmaj7.interestingmod.items.weapon;
+package net.Gmaj7.interestingmod.modItems.weapon;
 
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
-import net.Gmaj7.interestingmod.enchantment.ModEnchantments;
+import net.Gmaj7.interestingmod.modEnchantment.ModEnchantments;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attribute;

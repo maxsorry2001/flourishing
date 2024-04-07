@@ -1,7 +1,6 @@
-package net.Gmaj7.interestingmod.enchantment;
+package net.Gmaj7.interestingmod.modEnchantment;
 
 import net.Gmaj7.interestingmod.InterestingMod;
-import net.Gmaj7.interestingmod.items.weapon.AncientIngotKnife;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.enchantment.Enchantment;

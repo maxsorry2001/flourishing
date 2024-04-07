@@ -1,9 +1,9 @@
 package net.Gmaj7.interestingmod;
 
 import com.mojang.logging.LogUtils;
-import net.Gmaj7.interestingmod.enchantment.ModEnchantments;
-import net.Gmaj7.interestingmod.items.ModItems;
-import net.Gmaj7.interestingmod.items.potion.ModPotions;
+import net.Gmaj7.interestingmod.modEnchantment.ModEnchantments;
+import net.Gmaj7.interestingmod.modItems.ModItems;
+import net.Gmaj7.interestingmod.modItems.potion.ModPotions;
 import net.Gmaj7.interestingmod.modeffect.ModEffects;
 import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundEvents;
@@ -14,7 +14,6 @@ import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -38,7 +37,7 @@ import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
 import org.slf4j.Logger;
 
-import static net.Gmaj7.interestingmod.items.ModItems.ITEMS;
+import static net.Gmaj7.interestingmod.modItems.ModItems.ITEMS;
 
 // The value here should match an entry in the META-INF/mods.toml file
 @Mod(InterestingMod.MODID)

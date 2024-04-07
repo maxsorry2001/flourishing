@@ -1,4 +1,4 @@
-package net.Gmaj7.interestingmod.items;
+package net.Gmaj7.interestingmod.modItems;
 
 import net.Gmaj7.interestingmod.modeffect.ModEffects;
 import net.minecraft.world.effect.MobEffectInstance;

@@ -1,11 +1,11 @@
-package net.Gmaj7.interestingmod.items;
+package net.Gmaj7.interestingmod.modItems;
 
+import net.Gmaj7.interestingmod.InterestingMod;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.Gmaj7.interestingmod.InterestingMod;
 
 import java.util.function.Supplier;
 

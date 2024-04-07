@@ -17,6 +17,8 @@ public class ModEffects {
             () -> new LavaBody(MobEffectCategory.BENEFICIAL, 11361111));
     public static final Supplier<MobEffect> WINE = MOB_EFFECT.register("wine",
             () -> new ModEffect(MobEffectCategory.BENEFICIAL, 16262179));
+    public static final Supplier<MobEffect> SUKUNA = MOB_EFFECT.register("sukuna",
+            () -> new ModEffect(MobEffectCategory.NEUTRAL,1119865));
 
     public static void register(IEventBus eventBus){MOB_EFFECT.register(eventBus);}
 }

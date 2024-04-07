@@ -1,4 +1,4 @@
-package net.Gmaj7.interestingmod.items.potion;
+package net.Gmaj7.interestingmod.modItems.potion;
 
 import net.Gmaj7.interestingmod.InterestingMod;
 import net.Gmaj7.interestingmod.modeffect.ModEffects;

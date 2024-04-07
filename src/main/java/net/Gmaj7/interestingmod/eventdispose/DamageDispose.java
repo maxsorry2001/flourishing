@@ -1,7 +1,7 @@
 package net.Gmaj7.interestingmod.eventdispose;
 
 import net.Gmaj7.interestingmod.InterestingMod;
-import net.Gmaj7.interestingmod.enchantment.ModEnchantments;
+import net.Gmaj7.interestingmod.modEnchantment.ModEnchantments;
 import net.Gmaj7.interestingmod.modeffect.ModEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -15,7 +15,7 @@ import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.neoforge.event.entity.living.LivingAttackEvent;
-import net.neoforged.neoforge.event.entity.living.LivingHurtEvent;
+import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
 
 @Mod.EventBusSubscriber(modid = InterestingMod.MODID)
 public class DamageDispose {
@@ -53,7 +53,7 @@ public class DamageDispose {
         }
     }
     @SubscribeEvent
-    public static void hurtadd(LivingHurtEvent event){
+    public static void damageAdd(LivingDamageEvent event){
         if (!event.getEntity().level().isClientSide()) {
             Entity source = event.getSource().getEntity();
             Entity direct = event.getSource().getDirectEntity();
@@ -86,15 +86,23 @@ public class DamageDispose {
                         }
                     }
                     if(phand > thand && pbody > tbody)
-                        event.setAmount(event.getAmount() + target.getMaxHealth() * 0.15F);
+                        event.setAmount(event.getAmount() + Math.min(event.getAmount() + 100F, target.getMaxHealth() * 0.2F));
                 }
                 if(((LivingEntity) source).hasEffect(ModEffects.WINE.get())){
                     event.setAmount(event.getAmount() * 2);
                 }
             }
-            if(event.getAmount() >= target.getHealth() && target.hasEffect(ModEffects.WINE.get())){
-                target.removeEffect(ModEffects.WINE.get());
-                event.setAmount(target.getHealth() > 1 ? target.getHealth() - 1 : 1);
+            if(event.getAmount() >= target.getHealth()) {
+                if(target.hasEffect(ModEffects.WINE.get())){
+                    target.removeEffect(ModEffects.WINE.get());
+                    event.setAmount(target.getHealth() > 1 ? target.getHealth() - 1 : 1);
+                }
+                else if (target.hasEffect(ModEffects.SUKUNA.get()) && source instanceof LivingEntity){
+                    ((LivingEntity) source).die(target.level().damageSources().magic());
+                    ((LivingEntity) source).setHealth(0F);
+                    event.setAmount(0F);
+                    target.setHealth(target.getMaxHealth());
+                }
             }
         }
     }

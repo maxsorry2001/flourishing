@@ -1,7 +1,7 @@
-package net.Gmaj7.interestingmod.items;
+package net.Gmaj7.interestingmod.modItems;
 
 import net.Gmaj7.interestingmod.InterestingMod;
-import net.Gmaj7.interestingmod.items.weapon.AncientIngotKnife;
+import net.Gmaj7.interestingmod.modItems.weapon.AncientIngotKnife;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.Item;
 import net.neoforged.neoforge.registries.DeferredRegister;
