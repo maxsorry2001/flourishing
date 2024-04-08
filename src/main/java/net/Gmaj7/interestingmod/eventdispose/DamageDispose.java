@@ -98,7 +98,7 @@ public class DamageDispose {
                     event.setAmount(target.getHealth() > 1 ? target.getHealth() - 1 : 1);
                 }
                 else if (target.hasEffect(ModEffects.SUKUNA.get()) && source instanceof LivingEntity){
-                    ((LivingEntity) source).die(target.level().damageSources().magic());
+                    ((LivingEntity) source).die(target.level().damageSources().fellOutOfWorld());
                     ((LivingEntity) source).setHealth(0F);
                     event.setAmount(0F);
                     target.setHealth(target.getMaxHealth());
