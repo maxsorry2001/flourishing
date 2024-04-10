@@ -101,7 +101,7 @@ public class DamageDispose {
                         event.setAmount(event.getAmount() + Math.min(100F, target.getMaxHealth() * 0.2F));
                 }
                 if(aaf){
-                    List<LivingEntity> list = source.level().getEntitiesOfClass(LivingEntity.class, source.getBoundingBox().inflate(11D,11D,5D));
+                    List<LivingEntity> list = source.level().getEntitiesOfClass(LivingEntity.class, source.getBoundingBox().inflate(9D,5D,9D));
                     int shand = 0, thandmax = 0;
                     for (LivingEntity livingEntity : list){
                         int hand = 0;
@@ -110,11 +110,11 @@ public class DamageDispose {
                         if(livingEntity == source) shand = hand;
                         else if (hand > thandmax) thandmax = hand;
                     }
-                    if (shand > thandmax) event.setAmount(event.getAmount() * 2.5F);
+                    if (shand > thandmax) event.setAmount(event.getAmount() * 1.75F);
                 }
                 if(EnchantmentHelper.getTagEnchantmentLevel(ModEnchantments.ARRORGANT_AND_WILFUL.get(), target.getMainHandItem()) == 1
                     || EnchantmentHelper.getTagEnchantmentLevel(ModEnchantments.ARRORGANT_AND_WILFUL.get(), target.getOffhandItem()) == 1){
-                    List<LivingEntity> list = target.level().getEntitiesOfClass(LivingEntity.class, source.getBoundingBox().inflate(11D,11D,5D));
+                    List<LivingEntity> list = target.level().getEntitiesOfClass(LivingEntity.class, source.getBoundingBox().inflate(9D,5D,9D));
                     int thand = 0, ohandmax = 0;
                     for (LivingEntity livingEntity : list){
                         int hand = 0;
@@ -123,7 +123,7 @@ public class DamageDispose {
                         if(livingEntity == target) thand = hand;
                         else if (hand > ohandmax) ohandmax = hand;
                     }
-                    if (thand > ohandmax) event.setAmount(event.getAmount() * 2.5F);
+                    if (thand > ohandmax) event.setAmount(event.getAmount() * 1.75F);
                 }
             }
         }
