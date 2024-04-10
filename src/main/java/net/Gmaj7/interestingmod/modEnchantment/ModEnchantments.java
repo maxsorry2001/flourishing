@@ -14,17 +14,21 @@ import java.util.function.Supplier;
 public class ModEnchantments {
     public static final DeferredRegister<Enchantment> ENCHANTMENTS
             = DeferredRegister.create(Registries.ENCHANTMENT, InterestingMod.MODID);
-    private static final Predicate<Item> predicate1 = item -> item instanceof TridentItem;
-    private static final Predicate<Item> predicate2 = item -> item instanceof SwordItem;
-    private static final Predicate<Item> predicate3 = item -> item instanceof BowItem;
-    private static final Predicate<Item> predicate4 = item -> item instanceof CrossbowItem;
-    private static final Predicate<Item> predicate5 = item -> item instanceof ShovelItem;
+    private static final Predicate<Item> trident = item -> item instanceof TridentItem;
+    private static final Predicate<Item> sword = item -> item instanceof SwordItem;
+    private static final Predicate<Item> bow = item -> item instanceof BowItem;
+    private static final Predicate<Item> crossbow = item -> item instanceof CrossbowItem;
+    private static final Predicate<Item> projectweapen = item -> item instanceof ProjectileWeaponItem;
+    private static final Predicate<Item> tiered = item -> item instanceof TieredItem;
 
     public static Supplier<Enchantment> ARMYDESTROYER = ENCHANTMENTS.register("army_destroyer",
             () -> new ArmyDestroyer(Enchantment.Rarity.COMMON, EnchantmentCategory.create("army_destroyer_can_enchant",
-                                predicate1.or(predicate2).or(predicate3).or(predicate4))));
+                                trident.or(sword).or(projectweapen))));
     public static Supplier<Enchantment> COMPANY = ENCHANTMENTS.register("company",
-            () -> new Company(Enchantment.Rarity.COMMON,EnchantmentCategory.create("company_enchant",predicate5)));
+            () -> new Company(Enchantment.Rarity.COMMON,EnchantmentCategory.create("company_enchant",tiered)));
+    public static Supplier<Enchantment> ARRORGANT_AND_WILFUL = ENCHANTMENTS.register("arrogant_and_wilful",
+            () -> new ArrogantAndWilful(Enchantment.Rarity.COMMON, EnchantmentCategory.create("aaw_can_enchant",
+                                trident.or(sword).or(projectweapen))));
 
     public static void register(IEventBus eventBus){
         ENCHANTMENTS.register(eventBus);

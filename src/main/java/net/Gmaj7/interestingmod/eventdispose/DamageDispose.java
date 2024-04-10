@@ -11,11 +11,14 @@ import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.entity.projectile.ThrownTrident;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.ProjectileWeaponItem;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.neoforge.event.entity.living.LivingAttackEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
+
+import java.util.List;
 
 @Mod.EventBusSubscriber(modid = InterestingMod.MODID)
 public class DamageDispose {
@@ -60,15 +63,24 @@ public class DamageDispose {
             LivingEntity target = event.getEntity();
             if (source instanceof LivingEntity) {
                 int rank = 0;
-                if(direct == source)
+                boolean aaf = false;
+                if(direct == source){
                     rank = EnchantmentHelper.getTagEnchantmentLevel(ModEnchantments.ARMYDESTROYER.get(),((LivingEntity) source).getItemBySlot(EquipmentSlot.MAINHAND));
-                else if (direct instanceof ThrownTrident)
+                    aaf = EnchantmentHelper.getTagEnchantmentLevel(ModEnchantments.ARRORGANT_AND_WILFUL.get(),((LivingEntity) source).getItemBySlot(EquipmentSlot.MAINHAND)) == 1;
+                }
+                else if (direct instanceof ThrownTrident){
                     rank = EnchantmentHelper.getTagEnchantmentLevel(ModEnchantments.ARMYDESTROYER.get(),((ThrownTrident) direct).getPickupItemStackOrigin());
+                    aaf = EnchantmentHelper.getTagEnchantmentLevel(ModEnchantments.ARRORGANT_AND_WILFUL.get(),((ThrownTrident) direct).getPickupItemStackOrigin()) == 1;
+                }
                 else if (direct instanceof AbstractArrow){
-                    if(((LivingEntity) source).getItemBySlot(EquipmentSlot.MAINHAND).getItem() == Items.BOW || ((LivingEntity) source).getItemBySlot(EquipmentSlot.MAINHAND).getItem() == Items.CROSSBOW)
-                        rank = EnchantmentHelper.getTagEnchantmentLevel(ModEnchantments.ARMYDESTROYER.get(),((LivingEntity) source).getItemBySlot(EquipmentSlot.MAINHAND));
-                    else if (((LivingEntity) source).getItemBySlot(EquipmentSlot.OFFHAND).getItem() == Items.BOW || ((LivingEntity) source).getItemBySlot(EquipmentSlot.MAINHAND).getItem() == Items.CROSSBOW)
-                        rank = EnchantmentHelper.getTagEnchantmentLevel(ModEnchantments.ARMYDESTROYER.get(),((LivingEntity) source).getItemBySlot(EquipmentSlot.OFFHAND));
+                    if(((LivingEntity) source).getMainHandItem().getItem() instanceof ProjectileWeaponItem){
+                        rank = EnchantmentHelper.getTagEnchantmentLevel(ModEnchantments.ARMYDESTROYER.get(),((LivingEntity) source).getMainHandItem());
+                        aaf = EnchantmentHelper.getTagEnchantmentLevel(ModEnchantments.ARRORGANT_AND_WILFUL.get(),((LivingEntity) source).getMainHandItem()) == 1;
+                    }
+                    else if (((LivingEntity) source).getOffhandItem().getItem() instanceof ProjectileWeaponItem){
+                        rank = EnchantmentHelper.getTagEnchantmentLevel(ModEnchantments.ARMYDESTROYER.get(),((LivingEntity) source).getOffhandItem());
+                        aaf = EnchantmentHelper.getTagEnchantmentLevel(ModEnchantments.ARRORGANT_AND_WILFUL.get(),((LivingEntity) source).getOffhandItem()) == 1;
+                    }
                 }
                 if (rank == 2) {
                     EquipmentSlot[] equipmentSlot = new EquipmentSlot[]{EquipmentSlot.MAINHAND, EquipmentSlot.OFFHAND,
@@ -86,22 +98,32 @@ public class DamageDispose {
                         }
                     }
                     if(phand > thand && pbody > tbody)
-                        event.setAmount(event.getAmount() + Math.min(event.getAmount() + 100F, target.getMaxHealth() * 0.2F));
+                        event.setAmount(event.getAmount() + Math.min(100F, target.getMaxHealth() * 0.2F));
                 }
-                if(((LivingEntity) source).hasEffect(ModEffects.WINE.get())){
-                    event.setAmount(event.getAmount() * 2);
+                if(aaf){
+                    List<LivingEntity> list = source.level().getEntitiesOfClass(LivingEntity.class, source.getBoundingBox().inflate(11D,11D,5D));
+                    int shand = 0, thandmax = 0;
+                    for (LivingEntity livingEntity : list){
+                        int hand = 0;
+                        if(!livingEntity.getMainHandItem().isEmpty()) hand++;
+                        if(!livingEntity.getOffhandItem().isEmpty()) hand++;
+                        if(livingEntity == source) shand = hand;
+                        else if (hand > thandmax) thandmax = hand;
+                    }
+                    if (shand > thandmax) event.setAmount(event.getAmount() * 2.5F);
                 }
-            }
-            if(event.getAmount() >= target.getHealth()) {
-                if(target.hasEffect(ModEffects.WINE.get())){
-                    target.removeEffect(ModEffects.WINE.get());
-                    event.setAmount(target.getHealth() > 1 ? target.getHealth() - 1 : 1);
-                }
-                else if (target.hasEffect(ModEffects.SUKUNA.get()) && source instanceof LivingEntity){
-                    ((LivingEntity) source).die(target.level().damageSources().fellOutOfWorld());
-                    ((LivingEntity) source).setHealth(0F);
-                    event.setAmount(0F);
-                    target.setHealth(target.getMaxHealth());
+                if(EnchantmentHelper.getTagEnchantmentLevel(ModEnchantments.ARRORGANT_AND_WILFUL.get(), target.getMainHandItem()) == 1
+                    || EnchantmentHelper.getTagEnchantmentLevel(ModEnchantments.ARRORGANT_AND_WILFUL.get(), target.getOffhandItem()) == 1){
+                    List<LivingEntity> list = target.level().getEntitiesOfClass(LivingEntity.class, source.getBoundingBox().inflate(11D,11D,5D));
+                    int thand = 0, ohandmax = 0;
+                    for (LivingEntity livingEntity : list){
+                        int hand = 0;
+                        if(!livingEntity.getMainHandItem().isEmpty()) hand++;
+                        if(!livingEntity.getOffhandItem().isEmpty()) hand++;
+                        if(livingEntity == target) thand = hand;
+                        else if (hand > ohandmax) ohandmax = hand;
+                    }
+                    if (thand > ohandmax) event.setAmount(event.getAmount() * 2.5F);
                 }
             }
         }
