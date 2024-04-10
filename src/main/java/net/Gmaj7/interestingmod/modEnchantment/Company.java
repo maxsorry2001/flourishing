@@ -29,6 +29,8 @@ public class Company extends Enchantment {
     public boolean canEnchant(ItemStack pStack) {
         return pStack.getItem() instanceof ShovelItem
                 || pStack.getItem() instanceof PickaxeItem
-                || pStack.getItem() instanceof SwordItem;
+                || pStack.getItem() instanceof SwordItem
+                || pStack.getItem() instanceof AxeItem
+                || pStack.getItem() instanceof HoeItem;
     }
 }
