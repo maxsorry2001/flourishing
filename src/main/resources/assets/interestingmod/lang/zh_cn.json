@@ -1,20 +1,11 @@
 {
-  "itemGroup.legends_of_the_three_kingdoms": "蒸蒸日上",
-
-  "item.minecraft.potion.effect.lava_potion": "熔岩瓶",
-  "item.minecraft.splash_potion.effect.lava_potion": "喷溅型熔岩瓶",
-  "item.minecraft.lingering_potion.effect.lava_potion": "滞留型熔岩瓶",
-  "item.minecraft.tipped_arrow.effect.lava_potion": "熔岩箭",
-  "item.interestingmod.ancient_ingot_knife": "古锭刀",
-  "item.interestingmod.wine_jars": "酒坛",
-  "item.interestingmod.wine": "酒",
-  "item.interestingmod.safety_helmet": "安全帽",
-  "item.interestingmod.half_lava_bucket": "半桶熔岩",
-
-  "effect.interestingmod.lava_body": "熔岩炼体",
-  "effect.interestingmod.wine": "酒",
+  "effect.interestingmod.repulse_the_enemy": "却敌",
+  "effect.interestingmod.vengeance": "仇决",
+  "effect.interestingmod.backwater": "背水",
 
   "enchantment.interestingmod.army_destroyer": "破军",
   "enchantment.interestingmod.company": "连营",
-  "enchantment.interestingmod.arrogant_and_wilful": "骄姿"
+  "enchantment.interestingmod.arrogant_and_wilful": "骄姿",
+  "enchantment.interestingmod.repulse_the_enemy": "却敌",
+  "enchantment.interestingmod.vengeance": "仇决"
 }

@@ -2,7 +2,6 @@ package net.Gmaj7.interestingmod.eventdispose;
 
 import net.Gmaj7.interestingmod.InterestingMod;
 import net.Gmaj7.interestingmod.modEnchantment.ModEnchantments;
-import net.Gmaj7.interestingmod.modeffect.ModEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;

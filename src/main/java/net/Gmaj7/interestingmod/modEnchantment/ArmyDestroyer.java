@@ -1,8 +1,10 @@
 package net.Gmaj7.interestingmod.modEnchantment;
 
-import net.Gmaj7.interestingmod.modItems.weapon.AncientIngotKnife;
 import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.item.*;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ProjectileWeaponItem;
+import net.minecraft.world.item.TieredItem;
+import net.minecraft.world.item.TridentItem;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentCategory;
 
@@ -22,11 +24,8 @@ public class ArmyDestroyer extends Enchantment {
 
     @Override
     public boolean canEnchant(ItemStack pStack) {
-        return pStack.getItem() instanceof AxeItem
-                || pStack.getItem() instanceof SwordItem
+        return pStack.getItem() instanceof TieredItem
                 || pStack.getItem() instanceof TridentItem
-                || pStack.getItem() instanceof BowItem
-                || pStack.getItem() instanceof CrossbowItem
-                || pStack.getItem() instanceof AncientIngotKnife;
+                || pStack.getItem() instanceof ProjectileWeaponItem;
     }
 }

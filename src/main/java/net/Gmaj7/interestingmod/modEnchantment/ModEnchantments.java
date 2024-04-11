@@ -29,6 +29,12 @@ public class ModEnchantments {
     public static Supplier<Enchantment> ARRORGANT_AND_WILFUL = ENCHANTMENTS.register("arrogant_and_wilful",
             () -> new ArrogantAndWilful(Enchantment.Rarity.COMMON, EnchantmentCategory.create("aaw_can_enchant",
                                 trident.or(sword).or(projectweapen))));
+    public static Supplier<Enchantment> REPULSE_THE_ENEMY = ENCHANTMENTS.register("repulse_the_enemy",
+            () -> new RepulseTheEnemy(Enchantment.Rarity.COMMON, EnchantmentCategory.create("rte_can_enchant",
+                                trident.or(sword).or(projectweapen))));
+    public static Supplier<Enchantment> VENGEANCE = ENCHANTMENTS.register("vengeance",
+            () -> new RepulseTheEnemy(Enchantment.Rarity.COMMON, EnchantmentCategory.create("vengeance_can_enchant",
+                    trident.or(sword).or(projectweapen))));
 
     public static void register(IEventBus eventBus){
         ENCHANTMENTS.register(eventBus);
