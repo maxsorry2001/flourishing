@@ -1,6 +1,6 @@
-package net.Gmaj7.interestingmod.modEnchantment;
+package net.Gmaj7.flourishing.modEnchantment;
 
-import net.Gmaj7.interestingmod.InterestingMod;
+import net.Gmaj7.flourishing.Flourishing;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.enchantment.Enchantment;
@@ -13,7 +13,7 @@ import java.util.function.Supplier;
 
 public class ModEnchantments {
     public static final DeferredRegister<Enchantment> ENCHANTMENTS
-            = DeferredRegister.create(Registries.ENCHANTMENT, InterestingMod.MODID);
+            = DeferredRegister.create(Registries.ENCHANTMENT, Flourishing.MODID);
     private static final Predicate<Item> trident = item -> item instanceof TridentItem;
     private static final Predicate<Item> sword = item -> item instanceof SwordItem;
     private static final Predicate<Item> bow = item -> item instanceof BowItem;

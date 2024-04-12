@@ -1,4 +1,4 @@
-package net.Gmaj7.interestingmod.modEnchantment;
+package net.Gmaj7.flourishing.modEnchantment;
 
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ItemStack;
