@@ -1,11 +1,11 @@
 {
-  "effect.interestingmod.repulse_the_enemy": "Repulse the enemy",
-  "effect.interestingmod.vengeance": "vengeance",
-  "effect.interestingmod.backwater": "backwater",
+  "effect.flourishing.repulse_the_enemy": "Repulse the enemy",
+  "effect.flourishing.vengeance": "vengeance",
+  "effect.flourishing.backwater": "backwater",
 
-  "enchantment.interestingmod.army_destroyer": "Army destroyer",
-  "enchantment.interestingmod.company": "Company",
-  "enchantment.interestingmod.arrogant_and_wilful": "Arrogant and wilful",
-  "enchantment.interestingmod.repulse_the_enemy": "Repulse rhe Enemy",
-  "enchantment.interestingmod.vengeance": "Vengeance"
+  "enchantment.flourishing.army_destroyer": "Army destroyer",
+  "enchantment.flourishing.company": "Company",
+  "enchantment.flourishing.arrogant_and_wilful": "Arrogant and wilful",
+  "enchantment.flourishing.repulse_the_enemy": "Repulse rhe Enemy",
+  "enchantment.flourishing.vengeance": "Vengeance"
 }

@@ -1,7 +1,7 @@
-package net.Gmaj7.interestingmod.eventdispose;
+package net.Gmaj7.flourishing.eventdispose;
 
-import net.Gmaj7.interestingmod.InterestingMod;
-import net.Gmaj7.interestingmod.modEnchantment.ModEnchantments;
+import net.Gmaj7.flourishing.Flourishing;
+import net.Gmaj7.flourishing.modEnchantment.ModEnchantments;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -16,7 +16,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
-@Mod.EventBusSubscriber(modid = InterestingMod.MODID)
+@Mod.EventBusSubscriber(modid = Flourishing.MODID)
 public class CompanyDispose {
     static ItemStack[] itemStackPool ={new ItemStack(Items.WOODEN_SHOVEL), new ItemStack(Items.STONE_SHOVEL),
             new ItemStack(Items.IRON_SHOVEL), new ItemStack(Items.GOLDEN_SHOVEL),

@@ -1,4 +1,4 @@
-package net.Gmaj7.interestingmod.modeffect;
+package net.Gmaj7.flourishing.modeffect;
 
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;

@@ -1,11 +1,11 @@
 {
-  "effect.interestingmod.repulse_the_enemy": "却敌",
-  "effect.interestingmod.vengeance": "仇决",
-  "effect.interestingmod.backwater": "背水",
+  "effect.flourishing.repulse_the_enemy": "却敌",
+  "effect.flourishing.vengeance": "仇决",
+  "effect.flourishing.backwater": "背水",
 
-  "enchantment.interestingmod.army_destroyer": "破军",
-  "enchantment.interestingmod.company": "连营",
-  "enchantment.interestingmod.arrogant_and_wilful": "骄姿",
-  "enchantment.interestingmod.repulse_the_enemy": "却敌",
-  "enchantment.interestingmod.vengeance": "仇决"
+  "enchantment.flourishing.army_destroyer": "破军",
+  "enchantment.flourishing.company": "连营",
+  "enchantment.flourishing.arrogant_and_wilful": "骄恣",
+  "enchantment.flourishing.repulse_the_enemy": "却敌",
+  "enchantment.flourishing.vengeance": "仇决"
 }

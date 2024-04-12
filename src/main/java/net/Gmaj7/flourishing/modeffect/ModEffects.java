@@ -1,6 +1,6 @@
-package net.Gmaj7.interestingmod.modeffect;
+package net.Gmaj7.flourishing.modeffect;
 
-import net.Gmaj7.interestingmod.InterestingMod;
+import net.Gmaj7.flourishing.Flourishing;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
@@ -13,7 +13,7 @@ import java.util.function.Supplier;
 
 public class ModEffects {
     public static final DeferredRegister<MobEffect> MOB_EFFECT
-            = DeferredRegister.create(Registries.MOB_EFFECT, InterestingMod.MODID);
+            = DeferredRegister.create(Registries.MOB_EFFECT, Flourishing.MODID);
 
     public static final Supplier<MobEffect> REPULSE_THE_ENEMY = MOB_EFFECT.register("repulse_the_enemy",
             () -> new ModEffect(MobEffectCategory.NEUTRAL, 11982273));
