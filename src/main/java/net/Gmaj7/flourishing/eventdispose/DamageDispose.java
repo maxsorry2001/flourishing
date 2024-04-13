@@ -46,13 +46,11 @@ public class DamageDispose {
                         rank = EnchantmentHelper.getTagEnchantmentLevel(ModEnchantments.ARMYDESTROYER.get(),((LivingEntity) source).getItemBySlot(EquipmentSlot.OFFHAND));
                 }
                 if (rank > 0) {
-                    EquipmentSlot[] equipmentSlot = new EquipmentSlot[]{EquipmentSlot.MAINHAND, EquipmentSlot.OFFHAND,
-                            EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS, EquipmentSlot.FEET};
                     for (int i = 0; i < 6; i++) {
-                        ItemStack itemStack = (target.getItemBySlot(equipmentSlot[i]));
+                        ItemStack itemStack = (target.getItemBySlot(equipmentSlots[i]));
                         if (!itemStack.isEmpty()) {
                             ItemEntity itemEntity = new ItemEntity(target.level(), target.getX(), target.getY(), target.getZ(), itemStack);
-                            target.setItemSlot(equipmentSlot[i], ItemStack.EMPTY);
+                            target.setItemSlot(equipmentSlots[i], ItemStack.EMPTY);
                             target.level().addFreshEntity(itemEntity);
                         }
                     }
@@ -94,16 +92,14 @@ public class DamageDispose {
                 }
                 //破军
                 if (rank == 2) {
-                    EquipmentSlot[] equipmentSlot = new EquipmentSlot[]{EquipmentSlot.MAINHAND, EquipmentSlot.OFFHAND,
-                            EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS, EquipmentSlot.FEET};
                     int phand = 0,pbody = 0,thand = 0,tbody = 0;
                     for (int i = 0; i < 6; i++) {
-                        if(!((LivingEntity) source).getItemBySlot(equipmentSlot[i]).isEmpty())
+                        if(!((LivingEntity) source).getItemBySlot(equipmentSlots[i]).isEmpty())
                         {
                             if(i < 2) phand ++;
                             else pbody++;
                         }
-                        if(!target.getItemBySlot(equipmentSlot[i]).isEmpty()){
+                        if(!target.getItemBySlot(equipmentSlots[i]).isEmpty()){
                             if(i < 2) thand ++;
                             else tbody++;
                         }
