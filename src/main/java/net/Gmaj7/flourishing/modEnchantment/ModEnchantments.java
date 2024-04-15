@@ -35,6 +35,14 @@ public class ModEnchantments {
     public static Supplier<Enchantment> VENGEANCE = ENCHANTMENTS.register("vengeance",
             () -> new RepulseTheEnemy(Enchantment.Rarity.COMMON, EnchantmentCategory.create("vengeance_can_enchant",
                     trident.or(sword).or(projectweapen))));
+    public static Supplier<Enchantment> CHECK_AND_BALABCE = ENCHANTMENTS.register("check_and_balance",
+            () -> new CheckAndBalance(Enchantment.Rarity.COMMON, EnchantmentCategory.create("cab_can_enchant",
+                    projectweapen)));
+    public static Supplier<Enchantment> GRAVE_DIGGER = ENCHANTMENTS.register("grave_digger",
+            () -> new GraveDigger(Enchantment.Rarity.COMMON, EnchantmentCategory.create("grave_digger",
+                    trident.or(sword).or(projectweapen))));
+    public static Supplier<Enchantment> BANISH = ENCHANTMENTS.register("banish",
+            () -> new Banish(Enchantment.Rarity.COMMON, EnchantmentCategory.ARMOR_CHEST));
 
     public static void register(IEventBus eventBus){
         ENCHANTMENTS.register(eventBus);

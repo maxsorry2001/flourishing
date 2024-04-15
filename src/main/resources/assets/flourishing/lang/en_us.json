@@ -2,10 +2,15 @@
   "effect.flourishing.repulse_the_enemy": "Repulse the enemy",
   "effect.flourishing.vengeance": "vengeance",
   "effect.flourishing.backwater": "backwater",
+  "effect.flourishing.check_and_balance": "Check and Balance",
+  "effect.flourishing.banishment": "Banishment",
 
   "enchantment.flourishing.army_destroyer": "Army destroyer",
   "enchantment.flourishing.company": "Company",
   "enchantment.flourishing.arrogant_and_wilful": "Arrogant and wilful",
-  "enchantment.flourishing.repulse_the_enemy": "Repulse rhe Enemy",
-  "enchantment.flourishing.vengeance": "Vengeance"
+  "enchantment.flourishing.repulse_the_enemy": "Repulse the Enemy",
+  "enchantment.flourishing.vengeance": "Vengeance",
+  "enchantment.flourishing.check_and_balance": "Check And Balance",
+  "enchantment.flourishing.grave_digger": "Grave Digger",
+  "enchantment.flourishing.banish": "Banish"
 }

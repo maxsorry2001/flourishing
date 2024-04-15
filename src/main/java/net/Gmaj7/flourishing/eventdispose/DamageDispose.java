@@ -3,17 +3,25 @@ package net.Gmaj7.flourishing.eventdispose;
 import net.Gmaj7.flourishing.Flourishing;
 import net.Gmaj7.flourishing.modEnchantment.ModEnchantments;
 import net.Gmaj7.flourishing.modeffect.ModEffects;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.entity.projectile.ThrownTrident;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.ProjectileWeaponItem;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraft.world.level.storage.loot.LootParams;
+import net.minecraft.world.level.storage.loot.LootTable;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.neoforge.event.entity.living.LivingAttackEvent;
@@ -34,18 +42,19 @@ public class DamageDispose {
             Entity direct = event.getSource().getDirectEntity();
             LivingEntity target = event.getEntity();
             if (source instanceof LivingEntity) {
-                int rank = 0;
+                if(((LivingEntity) source).hasEffect(ModEffects.BANISHMENT.get())) event.setCanceled(true);
+                int armyDestroyer = 0;
                 if(direct == source)
-                    rank = EnchantmentHelper.getTagEnchantmentLevel(ModEnchantments.ARMYDESTROYER.get(),((LivingEntity) source).getItemBySlot(EquipmentSlot.MAINHAND));
+                    armyDestroyer = EnchantmentHelper.getTagEnchantmentLevel(ModEnchantments.ARMYDESTROYER.get(),((LivingEntity) source).getItemBySlot(EquipmentSlot.MAINHAND));
                 else if (direct instanceof ThrownTrident)
-                    rank = EnchantmentHelper.getTagEnchantmentLevel(ModEnchantments.ARMYDESTROYER.get(),((ThrownTrident) direct).getPickupItemStackOrigin());
+                    armyDestroyer = EnchantmentHelper.getTagEnchantmentLevel(ModEnchantments.ARMYDESTROYER.get(),((ThrownTrident) direct).getPickupItemStackOrigin());
                 else if (direct instanceof AbstractArrow){
                     if(((LivingEntity) source).getItemBySlot(EquipmentSlot.MAINHAND).getItem() == Items.BOW || ((LivingEntity) source).getItemBySlot(EquipmentSlot.MAINHAND).getItem() == Items.CROSSBOW)
-                        rank = EnchantmentHelper.getTagEnchantmentLevel(ModEnchantments.ARMYDESTROYER.get(),((LivingEntity) source).getItemBySlot(EquipmentSlot.MAINHAND));
+                        armyDestroyer = EnchantmentHelper.getTagEnchantmentLevel(ModEnchantments.ARMYDESTROYER.get(),((LivingEntity) source).getItemBySlot(EquipmentSlot.MAINHAND));
                     else if (((LivingEntity) source).getItemBySlot(EquipmentSlot.OFFHAND).getItem() == Items.BOW || ((LivingEntity) source).getItemBySlot(EquipmentSlot.MAINHAND).getItem() == Items.CROSSBOW)
-                        rank = EnchantmentHelper.getTagEnchantmentLevel(ModEnchantments.ARMYDESTROYER.get(),((LivingEntity) source).getItemBySlot(EquipmentSlot.OFFHAND));
+                        armyDestroyer = EnchantmentHelper.getTagEnchantmentLevel(ModEnchantments.ARMYDESTROYER.get(),((LivingEntity) source).getItemBySlot(EquipmentSlot.OFFHAND));
                 }
-                if (rank > 0) {
+                if (armyDestroyer > 0) {
                     for (int i = 0; i < 6; i++) {
                         ItemStack itemStack = (target.getItemBySlot(equipmentSlots[i]));
                         if (!itemStack.isEmpty()) {
@@ -66,32 +75,32 @@ public class DamageDispose {
             Entity direct = event.getSource().getDirectEntity();
             LivingEntity target = event.getEntity();
             if (source instanceof LivingEntity) {
-                int rank = 0;
+                int armyDestroyer = 0;
                 boolean aaw = false/*骄恣*/, rte = false/*却敌*/;
                 if(direct == source){
-                    rank = EnchantmentHelper.getTagEnchantmentLevel(ModEnchantments.ARMYDESTROYER.get(),((LivingEntity) source).getMainHandItem());
+                    armyDestroyer = EnchantmentHelper.getTagEnchantmentLevel(ModEnchantments.ARMYDESTROYER.get(),((LivingEntity) source).getMainHandItem());
                     aaw = EnchantmentHelper.getTagEnchantmentLevel(ModEnchantments.ARRORGANT_AND_WILFUL.get(),((LivingEntity) source).getMainHandItem()) == 1;
                     rte = EnchantmentHelper.getTagEnchantmentLevel(ModEnchantments.REPULSE_THE_ENEMY.get(), ((LivingEntity) source).getMainHandItem()) == 1;
                 }
                 else if (direct instanceof ThrownTrident){
-                    rank = EnchantmentHelper.getTagEnchantmentLevel(ModEnchantments.ARMYDESTROYER.get(),((ThrownTrident) direct).getPickupItemStackOrigin());
+                    armyDestroyer = EnchantmentHelper.getTagEnchantmentLevel(ModEnchantments.ARMYDESTROYER.get(),((ThrownTrident) direct).getPickupItemStackOrigin());
                     aaw = EnchantmentHelper.getTagEnchantmentLevel(ModEnchantments.ARRORGANT_AND_WILFUL.get(),((ThrownTrident) direct).getPickupItemStackOrigin()) == 1;
                     rte = EnchantmentHelper.getTagEnchantmentLevel(ModEnchantments.REPULSE_THE_ENEMY.get(), ((ThrownTrident) direct).getPickupItemStackOrigin()) == 1;
                 }
                 else if (direct instanceof AbstractArrow){
                     if(((LivingEntity) source).getMainHandItem().getItem() instanceof ProjectileWeaponItem){
-                        rank = EnchantmentHelper.getTagEnchantmentLevel(ModEnchantments.ARMYDESTROYER.get(),((LivingEntity) source).getMainHandItem());
+                        armyDestroyer = EnchantmentHelper.getTagEnchantmentLevel(ModEnchantments.ARMYDESTROYER.get(),((LivingEntity) source).getMainHandItem());
                         aaw = EnchantmentHelper.getTagEnchantmentLevel(ModEnchantments.ARRORGANT_AND_WILFUL.get(),((LivingEntity) source).getMainHandItem()) == 1;
                         rte = EnchantmentHelper.getTagEnchantmentLevel(ModEnchantments.REPULSE_THE_ENEMY.get(), ((LivingEntity) source).getMainHandItem()) == 1;
                     }
                     else if (((LivingEntity) source).getOffhandItem().getItem() instanceof ProjectileWeaponItem){
-                        rank = EnchantmentHelper.getTagEnchantmentLevel(ModEnchantments.ARMYDESTROYER.get(),((LivingEntity) source).getOffhandItem());
+                        armyDestroyer = EnchantmentHelper.getTagEnchantmentLevel(ModEnchantments.ARMYDESTROYER.get(),((LivingEntity) source).getOffhandItem());
                         aaw = EnchantmentHelper.getTagEnchantmentLevel(ModEnchantments.ARRORGANT_AND_WILFUL.get(),((LivingEntity) source).getOffhandItem()) == 1;
                         rte = EnchantmentHelper.getTagEnchantmentLevel(ModEnchantments.REPULSE_THE_ENEMY.get(), ((LivingEntity) source).getOffhandItem()) == 1;
                     }
                 }
                 //破军
-                if (rank == 2) {
+                if (armyDestroyer == 2) {
                     int phand = 0,pbody = 0,thand = 0,tbody = 0;
                     for (int i = 0; i < 6; i++) {
                         if(!((LivingEntity) source).getItemBySlot(equipmentSlots[i]).isEmpty())
@@ -177,6 +186,9 @@ public class DamageDispose {
                         }
                     }
                 }
+                //放逐
+                if(EnchantmentHelper.getTagEnchantmentLevel(ModEnchantments.BANISH.get(), target.getItemBySlot(EquipmentSlot.CHEST)) > 0)
+                    ((LivingEntity) source).addEffect(new MobEffectInstance(ModEffects.BANISHMENT.get(), 600,0));
             }
             event.setAmount((event.getAmount() + damageAdd) * (1F + damageMul));
         }
@@ -186,28 +198,54 @@ public class DamageDispose {
    public static void deathDeal(LivingDeathEvent event){
         Entity cause = event.getSource().getEntity();
         Entity direct = event.getSource().getDirectEntity();
+        LivingEntity target = event.getEntity();
         if (cause instanceof LivingEntity && !cause.level().isClientSide){
             boolean vegeance = false;
-            if(direct == cause & EnchantmentHelper.getTagEnchantmentLevel(ModEnchantments.VENGEANCE.get(), ((LivingEntity) cause).getMainHandItem()) > 0)
-                vegeance = true;
+            int grave_digger = 0;
+            if(direct == cause) {
+                vegeance = EnchantmentHelper.getTagEnchantmentLevel(ModEnchantments.VENGEANCE.get(), ((LivingEntity) cause).getMainHandItem()) > 0;
+                grave_digger += EnchantmentHelper.getTagEnchantmentLevel(ModEnchantments.GRAVE_DIGGER.get(),((LivingEntity) cause).getMainHandItem());
+            }
             else if (direct instanceof ThrownTrident){
-                if(EnchantmentHelper.getTagEnchantmentLevel(ModEnchantments.VENGEANCE.get(), ((ThrownTrident) direct).getPickupItemStackOrigin()) > 0)
-                    vegeance = true;
+                    vegeance = EnchantmentHelper.getTagEnchantmentLevel(ModEnchantments.VENGEANCE.get(), ((ThrownTrident) direct).getPickupItemStackOrigin()) > 0;
+                    grave_digger += EnchantmentHelper.getTagEnchantmentLevel(ModEnchantments.GRAVE_DIGGER.get(), ((ThrownTrident) direct).getPickupItemStackOrigin());
             }
             else if (direct instanceof AbstractArrow){
                 if(((LivingEntity) cause).getMainHandItem().getItem() instanceof ProjectileWeaponItem){
-                    if(EnchantmentHelper.getTagEnchantmentLevel(ModEnchantments.VENGEANCE.get(), ((LivingEntity) cause).getMainHandItem()) > 0)
-                        vegeance= true;
+                    vegeance= EnchantmentHelper.getTagEnchantmentLevel(ModEnchantments.VENGEANCE.get(), ((LivingEntity) cause).getMainHandItem()) > 0;
+                    grave_digger += EnchantmentHelper.getTagEnchantmentLevel(ModEnchantments.GRAVE_DIGGER.get(), ((LivingEntity) cause).getMainHandItem());
                 }
                 else if (((LivingEntity) cause).getOffhandItem().getItem() instanceof ProjectileWeaponItem){
-                    if(EnchantmentHelper.getTagEnchantmentLevel(ModEnchantments.VENGEANCE.get(), ((LivingEntity) cause).getOffhandItem()) > 0)
-                        vegeance= true;
+                    vegeance= EnchantmentHelper.getTagEnchantmentLevel(ModEnchantments.VENGEANCE.get(), ((LivingEntity) cause).getOffhandItem()) > 0;
+                    grave_digger += EnchantmentHelper.getTagEnchantmentLevel(ModEnchantments.GRAVE_DIGGER.get(), ((LivingEntity) cause).getOffhandItem());
                 }
             }
+            //仇决
             if(vegeance){
                 if(((LivingEntity) cause).hasEffect(ModEffects.REPULSE_THE_ENEMY.get()))
                     ((LivingEntity) cause).removeEffect(ModEffects.REPULSE_THE_ENEMY.get());
                 ((LivingEntity) cause).addEffect(new MobEffectInstance(ModEffects.VENGEANCE.get(), 600 ,((LivingEntity) cause).hasEffect(ModEffects.VENGEANCE.get()) ? ((LivingEntity) cause).getEffect(ModEffects.VENGEANCE.get()).getAmplifier() + 1  : 0));
+            }
+            //行殇
+            if(grave_digger > 0) {
+                ResourceLocation resourceLocation = target.getLootTable();
+                LootTable lootTable = target.level().getServer().getLootData().getLootTable(resourceLocation);
+                LootParams.Builder lootparams$builder = new LootParams.Builder((ServerLevel)target.level())
+                        .withParameter(LootContextParams.THIS_ENTITY, target)
+                        .withParameter(LootContextParams.ORIGIN, target.position())
+                        .withParameter(LootContextParams.DAMAGE_SOURCE, event.getSource())
+                        .withOptionalParameter(LootContextParams.KILLER_ENTITY, cause)
+                        .withOptionalParameter(LootContextParams.DIRECT_KILLER_ENTITY, direct);
+                if (cause instanceof Player) {
+                    lootparams$builder = lootparams$builder.withParameter(LootContextParams.LAST_DAMAGE_PLAYER, (Player) cause)
+                            .withLuck(2048F);
+                    if(grave_digger == 2){
+                        ((Player) cause).addEffect(new MobEffectInstance(MobEffects.HEAL,1,1));
+                    }
+                }
+
+                LootParams lootparams = lootparams$builder.create(LootContextParamSets.ENTITY);
+                lootTable.getRandomItems(lootparams, target.getLootTableSeed(), target::spawnAtLocation);
             }
         }
    }

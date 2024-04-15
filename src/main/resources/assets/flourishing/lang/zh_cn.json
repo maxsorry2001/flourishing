@@ -2,10 +2,15 @@
   "effect.flourishing.repulse_the_enemy": "却敌",
   "effect.flourishing.vengeance": "仇决",
   "effect.flourishing.backwater": "背水",
+  "effect.flourishing.check_and_balance": "制衡",
+  "effect.flourishing.banishment": "放逐",
 
   "enchantment.flourishing.army_destroyer": "破军",
   "enchantment.flourishing.company": "连营",
   "enchantment.flourishing.arrogant_and_wilful": "骄恣",
   "enchantment.flourishing.repulse_the_enemy": "却敌",
-  "enchantment.flourishing.vengeance": "仇决"
+  "enchantment.flourishing.vengeance": "仇决",
+  "enchantment.flourishing.check_and_balance": "制衡",
+  "enchantment.flourishing.grave_digger": "行殇",
+  "enchantment.flourishing.banish": "放逐"
 }
