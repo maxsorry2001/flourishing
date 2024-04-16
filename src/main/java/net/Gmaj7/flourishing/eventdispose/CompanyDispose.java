@@ -1,7 +1,7 @@
 package net.Gmaj7.flourishing.eventdispose;
 
 import net.Gmaj7.flourishing.Flourishing;
-import net.Gmaj7.flourishing.modEnchantment.ModEnchantments;
+import net.Gmaj7.flourishing.modEnchantment.FlourishingEnchantments;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -37,9 +37,9 @@ public class CompanyDispose {
     public static void old_to_new(PlayerDestroyItemEvent event){
         ItemStack itemStack = event.getOriginal();
         Player player = event.getEntity();
-        if(EnchantmentHelper.getTagEnchantmentLevel(ModEnchantments.COMPANY.get(), itemStack) > 0){
+        if(EnchantmentHelper.getTagEnchantmentLevel(FlourishingEnchantments.COMPANY.get(), itemStack) > 0){
             Map<Enchantment, Integer> enchantmentIntegerMap = new HashMap<>();
-            enchantmentIntegerMap.put(ModEnchantments.COMPANY.get(), 1);
+            enchantmentIntegerMap.put(FlourishingEnchantments.COMPANY.get(), 1);
             int n = new Random().nextInt(30);
             ItemStack itemStackNew = itemStackPool[n];
             itemStackNew.setDamageValue(itemStackNew.getMaxDamage() - 1);
