@@ -11,7 +11,7 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
-public class ModEnchantments {
+public class FlourishingEnchantments {
     public static final DeferredRegister<Enchantment> ENCHANTMENTS
             = DeferredRegister.create(Registries.ENCHANTMENT, Flourishing.MODID);
     private static final Predicate<Item> trident = item -> item instanceof TridentItem;
