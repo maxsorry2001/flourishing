@@ -1,8 +1,8 @@
 package net.Gmaj7.flourishing;
 
 import com.mojang.logging.LogUtils;
-import net.Gmaj7.flourishing.modEnchantment.FlourishingEnchantments;
-import net.Gmaj7.flourishing.modeffect.FlourishingEffects;
+import net.Gmaj7.flourishing.flourishingEnchantment.FlourishingEnchantments;
+import net.Gmaj7.flourishing.flourishingEffect.FlourishingEffects;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;

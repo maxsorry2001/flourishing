@@ -1,8 +1,8 @@
 package net.Gmaj7.flourishing.eventdispose;
 
 import net.Gmaj7.flourishing.Flourishing;
-import net.Gmaj7.flourishing.modEnchantment.FlourishingEnchantments;
-import net.Gmaj7.flourishing.modeffect.FlourishingEffects;
+import net.Gmaj7.flourishing.flourishingEnchantment.FlourishingEnchantments;
+import net.Gmaj7.flourishing.flourishingEffect.FlourishingEffects;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.effect.MobEffectInstance;

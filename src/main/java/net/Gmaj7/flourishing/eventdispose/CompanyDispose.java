@@ -1,7 +1,7 @@
 package net.Gmaj7.flourishing.eventdispose;
 
 import net.Gmaj7.flourishing.Flourishing;
-import net.Gmaj7.flourishing.modEnchantment.FlourishingEnchantments;
+import net.Gmaj7.flourishing.flourishingEnchantment.FlourishingEnchantments;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;

@@ -1,4 +1,4 @@
-package net.Gmaj7.flourishing.modEnchantment;
+package net.Gmaj7.flourishing.flourishingEnchantment;
 
 import net.Gmaj7.flourishing.Flourishing;
 import net.minecraft.core.registries.Registries;

@@ -1,4 +1,4 @@
-package net.Gmaj7.flourishing.modeffect;
+package net.Gmaj7.flourishing.flourishingEffect;
 
 import net.Gmaj7.flourishing.Flourishing;
 import net.minecraft.core.registries.Registries;
