@@ -6,8 +6,9 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentCategory;
 
-public class Banish extends Enchantment {
-    protected Banish(Rarity pRarity, EnchantmentCategory pCategory, EquipmentSlot... pApplicableSlots) {
+public class Nirvana extends Enchantment {
+
+    protected Nirvana(Rarity pRarity, EnchantmentCategory pCategory, EquipmentSlot... pApplicableSlots) {
         super(pRarity, pCategory, pApplicableSlots);
     }
 
@@ -23,6 +24,6 @@ public class Banish extends Enchantment {
 
     @Override
     public boolean canEnchant(ItemStack pStack) {
-        return pStack.getItem() instanceof ArmorItem armorItem && armorItem.getEquipmentSlot() == EquipmentSlot.CHEST;
+        return pStack.getItem() instanceof ArmorItem && ((ArmorItem) pStack.getItem()).getType() == ArmorItem.Type.HELMET;
     }
 }

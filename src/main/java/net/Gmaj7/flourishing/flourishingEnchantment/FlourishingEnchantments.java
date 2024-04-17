@@ -43,6 +43,13 @@ public class FlourishingEnchantments {
                     trident.or(sword).or(projectweapen))));
     public static Supplier<Enchantment> BANISH = ENCHANTMENTS.register("banish",
             () -> new Banish(Enchantment.Rarity.COMMON, EnchantmentCategory.ARMOR_CHEST));
+    public static Supplier<Enchantment> ROAR = ENCHANTMENTS.register("roar",
+            () -> new Roar(Enchantment.Rarity.COMMON, EnchantmentCategory.WEAPON));
+    public static Supplier<Enchantment> UNFEELING = ENCHANTMENTS.register("unfeeling",
+            () -> new Unfelling(Enchantment.Rarity.COMMON,EnchantmentCategory.create("unfeeling",
+                    trident.or(sword).or(projectweapen))));
+    public static Supplier<Enchantment> Nirvana = ENCHANTMENTS.register("nirvana",
+            () -> new Nirvana(Enchantment.Rarity.COMMON, EnchantmentCategory.ARMOR_HEAD));
 
     public static void register(IEventBus eventBus){
         ENCHANTMENTS.register(eventBus);

@@ -1,10 +1,16 @@
 package net.Gmaj7.flourishing.eventdispose;
 
 import net.Gmaj7.flourishing.Flourishing;
+import net.Gmaj7.flourishing.flourishingDamageType.FlourishingDamageTypes;
 import net.Gmaj7.flourishing.flourishingEnchantment.FlourishingEnchantments;
 import net.Gmaj7.flourishing.flourishingEffect.FlourishingEffects;
+import net.minecraft.core.Holder;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
@@ -15,7 +21,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.entity.projectile.ThrownTrident;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.item.ProjectileWeaponItem;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.storage.loot.LootParams;
@@ -36,7 +41,7 @@ public class DamageDispose {
 
     static EquipmentSlot[] equipmentSlots = {EquipmentSlot.MAINHAND, EquipmentSlot.OFFHAND, EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS, EquipmentSlot.FEET};
     @SubscribeEvent
-    public static void remove(LivingAttackEvent event) {
+    public static void dealBegin(LivingAttackEvent event) {
         if (!event.getEntity().level().isClientSide()) {
             Entity source = event.getSource().getEntity();
             Entity direct = event.getSource().getDirectEntity();
@@ -44,15 +49,30 @@ public class DamageDispose {
             if (source instanceof LivingEntity) {
                 if(((LivingEntity) source).hasEffect(FlourishingEffects.BANISHMENT.get())) event.setCanceled(true);
                 int armyDestroyer = 0;
-                if(direct == source)
-                    armyDestroyer = EnchantmentHelper.getTagEnchantmentLevel(FlourishingEnchantments.ARMYDESTROYER.get(),((LivingEntity) source).getItemBySlot(EquipmentSlot.MAINHAND));
-                else if (direct instanceof ThrownTrident)
+                boolean unfeeling = false;
+                if(direct == source) {
+                    armyDestroyer = EnchantmentHelper.getTagEnchantmentLevel(FlourishingEnchantments.ARMYDESTROYER.get(), ((LivingEntity) source).getMainHandItem());
+                    unfeeling = EnchantmentHelper.getTagEnchantmentLevel(FlourishingEnchantments.UNFEELING.get(), ((LivingEntity) source).getMainHandItem()) > 0;
+                    if(unfeeling) ((LivingEntity) source).getMainHandItem().hurtAndBreak(1, (LivingEntity) source, p -> p.broadcastBreakEvent(EquipmentSlot.MAINHAND));
+                }
+                else if (direct instanceof ThrownTrident) {
                     armyDestroyer = EnchantmentHelper.getTagEnchantmentLevel(FlourishingEnchantments.ARMYDESTROYER.get(),((ThrownTrident) direct).getPickupItemStackOrigin());
+                    unfeeling = EnchantmentHelper.getTagEnchantmentLevel(FlourishingEnchantments.UNFEELING.get(),((ThrownTrident) direct).getPickupItemStackOrigin()) > 0;
+                }
                 else if (direct instanceof AbstractArrow){
-                    if(((LivingEntity) source).getItemBySlot(EquipmentSlot.MAINHAND).getItem() == Items.BOW || ((LivingEntity) source).getItemBySlot(EquipmentSlot.MAINHAND).getItem() == Items.CROSSBOW)
-                        armyDestroyer = EnchantmentHelper.getTagEnchantmentLevel(FlourishingEnchantments.ARMYDESTROYER.get(),((LivingEntity) source).getItemBySlot(EquipmentSlot.MAINHAND));
-                    else if (((LivingEntity) source).getItemBySlot(EquipmentSlot.OFFHAND).getItem() == Items.BOW || ((LivingEntity) source).getItemBySlot(EquipmentSlot.MAINHAND).getItem() == Items.CROSSBOW)
-                        armyDestroyer = EnchantmentHelper.getTagEnchantmentLevel(FlourishingEnchantments.ARMYDESTROYER.get(),((LivingEntity) source).getItemBySlot(EquipmentSlot.OFFHAND));
+                    if(((LivingEntity) source).getMainHandItem().getItem() instanceof ProjectileWeaponItem ) {
+                        armyDestroyer = EnchantmentHelper.getTagEnchantmentLevel(FlourishingEnchantments.ARMYDESTROYER.get(),((LivingEntity) source).getMainHandItem());
+                        unfeeling = EnchantmentHelper.getTagEnchantmentLevel(FlourishingEnchantments.UNFEELING.get(),((LivingEntity) source).getMainHandItem()) > 0;
+                    }
+                    else if (((LivingEntity) source).getOffhandItem().getItem() instanceof ProjectileWeaponItem) {
+                        armyDestroyer = EnchantmentHelper.getTagEnchantmentLevel(FlourishingEnchantments.ARMYDESTROYER.get(),((LivingEntity) source).getOffhandItem());
+                        unfeeling = EnchantmentHelper.getTagEnchantmentLevel(FlourishingEnchantments.UNFEELING.get(),((LivingEntity) source).getOffhandItem()) > 0;
+                    }
+                }
+                if(unfeeling){
+                    event.setCanceled(true);
+                    Holder<DamageType> holder = target.level().registryAccess().registryOrThrow(Registries.DAMAGE_TYPE).getHolderOrThrow(FlourishingDamageTypes.HEALTH_LOOSE);
+                    target.hurt(new DamageSource(holder), event.getAmount());
                 }
                 if (armyDestroyer > 0) {
                     for (int i = 0; i < 6; i++) {
@@ -74,11 +94,12 @@ public class DamageDispose {
             Entity source = event.getSource().getEntity();
             Entity direct = event.getSource().getDirectEntity();
             LivingEntity target = event.getEntity();
+            int armyDestroyer = 0, roarRank = 0;
+            boolean aaw = false/*骄恣*/, rte = false/*却敌*/;
             if (source instanceof LivingEntity) {
-                int armyDestroyer = 0;
-                boolean aaw = false/*骄恣*/, rte = false/*却敌*/;
                 if(direct == source){
                     armyDestroyer = EnchantmentHelper.getTagEnchantmentLevel(FlourishingEnchantments.ARMYDESTROYER.get(),((LivingEntity) source).getMainHandItem());
+                    roarRank = EnchantmentHelper.getTagEnchantmentLevel(FlourishingEnchantments.ROAR.get(),((LivingEntity) source).getMainHandItem());
                     aaw = EnchantmentHelper.getTagEnchantmentLevel(FlourishingEnchantments.ARRORGANT_AND_WILFUL.get(),((LivingEntity) source).getMainHandItem()) == 1;
                     rte = EnchantmentHelper.getTagEnchantmentLevel(FlourishingEnchantments.REPULSE_THE_ENEMY.get(), ((LivingEntity) source).getMainHandItem()) == 1;
                 }
@@ -163,34 +184,58 @@ public class DamageDispose {
                     damageAdd += target.getHealth() * 0.3F;
                     ((LivingEntity) source).addEffect(new MobEffectInstance(FlourishingEffects.REPULSE_THE_ENEMY.get(), 600));
                     if(source.isShiftKeyDown() && ((LivingEntity) source).getMaxHealth() > 2){
-                        boolean equipFlag = false;
-                        for (int i = 0; i < 6; i++){
-                            if(!target.getItemBySlot(equipmentSlots[i]).isEmpty()) {
-                                equipFlag = true;
-                                break;
-                            }
+                        int fliter = new Random().nextInt(6);
+                        ItemStack getItem = target.getItemBySlot(equipmentSlots[fliter]);
+                        for (int j = 0; j < 5 && getItem.isEmpty(); j++){
+                            fliter = (fliter + 1) % 6;
+                            getItem = target.getItemBySlot(equipmentSlots[fliter]);
                         }
-                        if(equipFlag){
-                            int fliter = new Random().nextInt(6);
-                            ItemStack getItem = target.getItemBySlot(equipmentSlots[fliter]);
-                            for (int j = 0; j < 5 && getItem.isEmpty(); j++){
-                                fliter = (fliter + 1) % 6;
-                                getItem = target.getItemBySlot(equipmentSlots[fliter]);
-                            }
-                            if (!getItem.isEmpty()){
-                                target.setItemSlot(equipmentSlots[fliter], ItemStack.EMPTY);
-                                ItemEntity getItemEntity = new ItemEntity(source.level(), source.getX(), source.getY(), source.getZ(), getItem);
-                                source.level().addFreshEntity(getItemEntity);
-                                ((LivingEntity) source).addEffect(new MobEffectInstance(FlourishingEffects.BACKWATER.get(), 600, ((LivingEntity) source).hasEffect(FlourishingEffects.BACKWATER.get()) ? ((LivingEntity) source).getEffect(FlourishingEffects.BACKWATER.get()).getAmplifier() + 1: 0));
-                            }
+                        if (!getItem.isEmpty()){
+                            target.setItemSlot(equipmentSlots[fliter], ItemStack.EMPTY);
+                            ItemEntity getItemEntity = new ItemEntity(source.level(), source.getX(), source.getY(), source.getZ(), getItem);
+                            source.level().addFreshEntity(getItemEntity);
+                            ((LivingEntity) source).addEffect(new MobEffectInstance(FlourishingEffects.BACKWATER.get(), 600, ((LivingEntity) source).hasEffect(FlourishingEffects.BACKWATER.get()) ? ((LivingEntity) source).getEffect(FlourishingEffects.BACKWATER.get()).getAmplifier() + 1: 0));
                         }
                     }
                 }
                 //放逐
                 if(EnchantmentHelper.getTagEnchantmentLevel(FlourishingEnchantments.BANISH.get(), target.getItemBySlot(EquipmentSlot.CHEST)) > 0)
                     ((LivingEntity) source).addEffect(new MobEffectInstance(FlourishingEffects.BANISHMENT.get(), 600,0));
+                //咆哮
+                if(((LivingEntity) source).hasEffect(FlourishingEffects.ROAR.get()) && roarRank > 1){
+                    switch (roarRank){
+                        case 2 : {
+                            damageAdd += target.getMaxHealth() * 0.20F;
+                            break;
+                        }
+                        case 3 : {
+                            damageAdd += target.getMaxHealth() * 0.30F;
+                        }
+                    }
+                }
             }
             event.setAmount((event.getAmount() + damageAdd) * (1F + damageMul));
+            //咆哮负面
+            if(source instanceof LivingEntity && ((LivingEntity) source).hasEffect(FlourishingEffects.ROAR.get()) && roarRank > 1 && event.getAmount() < target.getHealth()){
+                Holder<DamageType> holder = source.level().registryAccess().registryOrThrow(Registries.DAMAGE_TYPE).getHolderOrThrow(FlourishingDamageTypes.HEALTH_LOOSE);
+                switch (roarRank){
+                    case 2 : {
+                        source.hurt(new DamageSource(holder), 2);
+                        break;
+                    }
+                    case 3 : {
+                        source.hurt(new DamageSource(holder), 4);
+                        ((LivingEntity) source).getMainHandItem().hurtAndBreak(1, (LivingEntity) source, p -> p.broadcastBreakEvent(InteractionHand.MAIN_HAND));
+                        break;
+                    }
+                }
+            }
+            //涅槃
+            if(!target.hasEffect(FlourishingEffects.NIRVANA.get()) && EnchantmentHelper.getTagEnchantmentLevel(FlourishingEnchantments.Nirvana.get(), target.getItemBySlot(EquipmentSlot.HEAD)) > 0 && event.getAmount() >= target.getHealth()){
+                event.setAmount(0);
+                target.addEffect(new MobEffectInstance(MobEffects.HEAL, 1, 7));
+                target.addEffect(new MobEffectInstance(FlourishingEffects.NIRVANA.get(), 6000));
+            }
         }
     }
 

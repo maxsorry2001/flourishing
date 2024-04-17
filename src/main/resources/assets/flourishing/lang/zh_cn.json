@@ -4,6 +4,8 @@
   "effect.flourishing.backwater": "背水",
   "effect.flourishing.check_and_balance": "制衡",
   "effect.flourishing.banishment": "放逐",
+  "effect.flourishing.roar": "咆哮",
+  "effect.flourishing.nirvana": "涅槃",
 
   "enchantment.flourishing.army_destroyer": "破军",
   "enchantment.flourishing.company": "连营",
@@ -12,5 +14,10 @@
   "enchantment.flourishing.vengeance": "仇决",
   "enchantment.flourishing.check_and_balance": "制衡",
   "enchantment.flourishing.grave_digger": "行殇",
-  "enchantment.flourishing.banish": "放逐"
+  "enchantment.flourishing.banish": "放逐",
+  "enchantment.flourishing.roar": "咆哮",
+  "enchantment.flourishing.unfeeling": "绝情",
+  "enchantment.flourishing.nirvana": "涅槃",
+
+  "death.attack.health_loose" : "%1$s耗尽了所有生命"
 }

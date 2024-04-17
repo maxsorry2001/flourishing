@@ -4,6 +4,8 @@
   "effect.flourishing.backwater": "backwater",
   "effect.flourishing.check_and_balance": "Check and Balance",
   "effect.flourishing.banishment": "Banishment",
+  "effect.flourishing.roar": "Roar",
+  "effect.flourishing.nirvana": "Nirvana",
 
   "enchantment.flourishing.army_destroyer": "Army destroyer",
   "enchantment.flourishing.company": "Company",
@@ -12,5 +14,10 @@
   "enchantment.flourishing.vengeance": "Vengeance",
   "enchantment.flourishing.check_and_balance": "Check And Balance",
   "enchantment.flourishing.grave_digger": "Grave Digger",
-  "enchantment.flourishing.banish": "Banish"
+  "enchantment.flourishing.banish": "Banish",
+  "enchantment.flourishing.roar": "Roar",
+  "enchantment.flourishing.unfeeling": "Unfeeling",
+  "enchantment.flourishing.nirvana": "Nirvana",
+
+  "death.attack.health_loose" : "%1$s has lost all health points"
 }

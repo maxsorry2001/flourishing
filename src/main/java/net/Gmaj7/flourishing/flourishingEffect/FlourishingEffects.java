@@ -25,9 +25,14 @@ public class FlourishingEffects {
                     .addAttributeModifier(Attributes.MAX_HEALTH, "99AD56AC-DD61-CDCA-AF87-72819CDCA7D2", 2, AttributeModifier.Operation.ADDITION));
     public static final Supplier<MobEffect> BANISHMENT = MOB_EFFECT.register("banishment",
             () -> new FlourishingEffect(MobEffectCategory.HARMFUL, 14736286)
-                    .addAttributeModifier(Attributes.MOVEMENT_SPEED, "99AD56AC-DD61-CDCA-AF87-72819CDCA7D3", -0.999F, AttributeModifier.Operation.MULTIPLY_TOTAL));
+                    .addAttributeModifier(Attributes.MOVEMENT_SPEED, "99AD56AC-DD61-CDCA-AF87-72819CDCA7D3", -0.999, AttributeModifier.Operation.MULTIPLY_TOTAL));
     public static final Supplier<MobEffect> CHECK_AND_BALANCE = MOB_EFFECT.register("check_and_balance",
             () -> new FlourishingEffect(MobEffectCategory.NEUTRAL, 30098213));
+    public static final Supplier<MobEffect> ROAR = MOB_EFFECT.register("roar",
+            () -> new FlourishingEffect(MobEffectCategory.BENEFICIAL,17623356)
+                    .addAttributeModifier(Attributes.ATTACK_SPEED, "99AD56AC-DD61-CDCA-AF87-72819CDCA7D4", 2, AttributeModifier.Operation.MULTIPLY_TOTAL));
+    public static final Supplier<MobEffect> NIRVANA = MOB_EFFECT.register("nirvana",
+            () -> new FlourishingEffect(MobEffectCategory.NEUTRAL, 63028817));
 
     public static void register(IEventBus eventBus){MOB_EFFECT.register(eventBus);}
 }
