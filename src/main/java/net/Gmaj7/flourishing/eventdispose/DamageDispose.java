@@ -152,7 +152,7 @@ public class DamageDispose {
                         damageMul += 0.75F;
                 }
                 if(EnchantmentHelper.getTagEnchantmentLevel(FlourishingEnchantments.ARRORGANT_AND_WILFUL.get(), target.getMainHandItem()) == 1
-                    || EnchantmentHelper.getTagEnchantmentLevel(FlourishingEnchantments.ARRORGANT_AND_WILFUL.get(), target.getOffhandItem()) == 1){
+                        || EnchantmentHelper.getTagEnchantmentLevel(FlourishingEnchantments.ARRORGANT_AND_WILFUL.get(), target.getOffhandItem()) == 1){
                     List<LivingEntity> list = target.level().getEntitiesOfClass(LivingEntity.class, source.getBoundingBox().inflate(9D,5D,9D));
                     int thand = 0, ohandmax = 0;
                     for (LivingEntity livingEntity : list){
@@ -239,8 +239,8 @@ public class DamageDispose {
         }
     }
 
-   @SubscribeEvent
-   public static void deathDeal(LivingDeathEvent event){
+    @SubscribeEvent
+    public static void deathDeal(LivingDeathEvent event){
         Entity cause = event.getSource().getEntity();
         Entity direct = event.getSource().getDirectEntity();
         LivingEntity target = event.getEntity();
@@ -252,8 +252,8 @@ public class DamageDispose {
                 grave_digger += EnchantmentHelper.getTagEnchantmentLevel(FlourishingEnchantments.GRAVE_DIGGER.get(),((LivingEntity) cause).getMainHandItem());
             }
             else if (direct instanceof ThrownTrident){
-                    vegeance = EnchantmentHelper.getTagEnchantmentLevel(FlourishingEnchantments.VENGEANCE.get(), ((ThrownTrident) direct).getPickupItemStackOrigin()) > 0;
-                    grave_digger += EnchantmentHelper.getTagEnchantmentLevel(FlourishingEnchantments.GRAVE_DIGGER.get(), ((ThrownTrident) direct).getPickupItemStackOrigin());
+                vegeance = EnchantmentHelper.getTagEnchantmentLevel(FlourishingEnchantments.VENGEANCE.get(), ((ThrownTrident) direct).getPickupItemStackOrigin()) > 0;
+                grave_digger += EnchantmentHelper.getTagEnchantmentLevel(FlourishingEnchantments.GRAVE_DIGGER.get(), ((ThrownTrident) direct).getPickupItemStackOrigin());
             }
             else if (direct instanceof AbstractArrow){
                 if(((LivingEntity) cause).getMainHandItem().getItem() instanceof ProjectileWeaponItem){
@@ -293,5 +293,5 @@ public class DamageDispose {
                 lootTable.getRandomItems(lootparams, target.getLootTableSeed(), target::spawnAtLocation);
             }
         }
-   }
+    }
 }
