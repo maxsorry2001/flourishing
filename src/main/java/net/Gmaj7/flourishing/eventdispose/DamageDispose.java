@@ -69,6 +69,7 @@ public class DamageDispose {
                         armyDestroyer = EnchantmentHelper.getTagEnchantmentLevel(FlourishingEnchantments.ARMYDESTROYER.get(),((LivingEntity) source).getOffhandItem());
                         unfeeling = EnchantmentHelper.getTagEnchantmentLevel(FlourishingEnchantments.UNFEELING.get(),((LivingEntity) source).getOffhandItem()) > 0;
                     }
+                    if(unfeeling) direct.remove(Entity.RemovalReason.DISCARDED);
                 }
                 if(unfeeling){
                     event.setCanceled(true);
