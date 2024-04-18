@@ -32,6 +32,7 @@ import net.neoforged.fml.common.Mod;
 import net.neoforged.neoforge.event.entity.living.LivingAttackEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
+import net.neoforged.neoforge.event.entity.living.LivingHurtEvent;
 
 import java.util.List;
 import java.util.Random;
@@ -49,30 +50,19 @@ public class DamageDispose {
             if (source instanceof LivingEntity) {
                 if(((LivingEntity) source).hasEffect(FlourishingEffects.BANISHMENT.get())) event.setCanceled(true);
                 int armyDestroyer = 0;
-                boolean unfeeling = false;
                 if(direct == source) {
                     armyDestroyer = EnchantmentHelper.getTagEnchantmentLevel(FlourishingEnchantments.ARMYDESTROYER.get(), ((LivingEntity) source).getMainHandItem());
-                    unfeeling = EnchantmentHelper.getTagEnchantmentLevel(FlourishingEnchantments.UNFEELING.get(), ((LivingEntity) source).getMainHandItem()) > 0;
-                    if(unfeeling) ((LivingEntity) source).getMainHandItem().hurtAndBreak(1, (LivingEntity) source, p -> p.broadcastBreakEvent(EquipmentSlot.MAINHAND));
                 }
                 else if (direct instanceof ThrownTrident) {
                     armyDestroyer = EnchantmentHelper.getTagEnchantmentLevel(FlourishingEnchantments.ARMYDESTROYER.get(),((ThrownTrident) direct).getPickupItemStackOrigin());
-                    unfeeling = EnchantmentHelper.getTagEnchantmentLevel(FlourishingEnchantments.UNFEELING.get(),((ThrownTrident) direct).getPickupItemStackOrigin()) > 0;
                 }
                 else if (direct instanceof AbstractArrow){
                     if(((LivingEntity) source).getMainHandItem().getItem() instanceof ProjectileWeaponItem ) {
                         armyDestroyer = EnchantmentHelper.getTagEnchantmentLevel(FlourishingEnchantments.ARMYDESTROYER.get(),((LivingEntity) source).getMainHandItem());
-                        unfeeling = EnchantmentHelper.getTagEnchantmentLevel(FlourishingEnchantments.UNFEELING.get(),((LivingEntity) source).getMainHandItem()) > 0;
                     }
                     else if (((LivingEntity) source).getOffhandItem().getItem() instanceof ProjectileWeaponItem) {
                         armyDestroyer = EnchantmentHelper.getTagEnchantmentLevel(FlourishingEnchantments.ARMYDESTROYER.get(),((LivingEntity) source).getOffhandItem());
-                        unfeeling = EnchantmentHelper.getTagEnchantmentLevel(FlourishingEnchantments.UNFEELING.get(),((LivingEntity) source).getOffhandItem()) > 0;
                     }
-                }
-                if(unfeeling){
-                    event.setCanceled(true);
-                    Holder<DamageType> holder = target.level().registryAccess().registryOrThrow(Registries.DAMAGE_TYPE).getHolderOrThrow(FlourishingDamageTypes.HEALTH_LOOSE);
-                    target.hurt(new DamageSource(holder), event.getAmount());
                 }
                 if (armyDestroyer > 0) {
                     for (int i = 0; i < 6; i++) {
@@ -83,6 +73,38 @@ public class DamageDispose {
                             target.level().addFreshEntity(itemEntity);
                         }
                     }
+                }
+            }
+        }
+    }
+    @SubscribeEvent
+    public static void hurtDeal(LivingHurtEvent event){
+        if (!event.getEntity().level().isClientSide()){
+            Entity source = event.getSource().getEntity();
+            Entity direct = event.getSource().getDirectEntity();
+            LivingEntity target = event.getEntity();
+            boolean unfeeling = false;
+            if (source instanceof LivingEntity) {
+                if(direct == source){
+                    unfeeling = EnchantmentHelper.getTagEnchantmentLevel(FlourishingEnchantments.UNFEELING.get(), ((LivingEntity) source).getMainHandItem()) > 0;
+                    if(unfeeling) ((LivingEntity) source).getMainHandItem().hurtAndBreak(1, (LivingEntity) source, p -> p.broadcastBreakEvent(EquipmentSlot.MAINHAND));
+                }
+                else if (direct instanceof ThrownTrident){
+                    unfeeling = EnchantmentHelper.getTagEnchantmentLevel(FlourishingEnchantments.UNFEELING.get(),((ThrownTrident) direct).getPickupItemStackOrigin()) > 0;
+                }
+                else if (direct instanceof AbstractArrow){
+                    if(((LivingEntity) source).getMainHandItem().getItem() instanceof ProjectileWeaponItem){
+                        unfeeling = EnchantmentHelper.getTagEnchantmentLevel(FlourishingEnchantments.UNFEELING.get(),((LivingEntity) source).getMainHandItem()) > 0;
+                    }
+                    else if (((LivingEntity) source).getOffhandItem().getItem() instanceof ProjectileWeaponItem){
+                        unfeeling = EnchantmentHelper.getTagEnchantmentLevel(FlourishingEnchantments.UNFEELING.get(),((LivingEntity) source).getOffhandItem()) > 0;
+                    }
+                    if(unfeeling) direct.remove(Entity.RemovalReason.CHANGED_DIMENSION);
+                }
+                if(unfeeling){
+                    event.setCanceled(true);
+                    Holder<DamageType> holder = target.level().registryAccess().registryOrThrow(Registries.DAMAGE_TYPE).getHolderOrThrow(FlourishingDamageTypes.HEALTH_LOOSE);
+                    target.hurt(new DamageSource(holder), event.getAmount());
                 }
             }
         }
