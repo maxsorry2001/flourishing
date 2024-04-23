@@ -50,6 +50,9 @@ public class FlourishingEnchantments {
                     trident.or(sword).or(projectweapen))));
     public static Supplier<Enchantment> Nirvana = ENCHANTMENTS.register("nirvana",
             () -> new Nirvana(Enchantment.Rarity.COMMON, EnchantmentCategory.ARMOR_HEAD));
+    public static Supplier<Enchantment> SEE_CLEARLY = ENCHANTMENTS.register("see_clearly",
+            () -> new SeeClearly(Enchantment.Rarity.COMMON, EnchantmentCategory.create("see_clearly_can_enchantment",
+                    trident.or(sword).or(projectweapen))));
 
     public static void register(IEventBus eventBus){
         ENCHANTMENTS.register(eventBus);

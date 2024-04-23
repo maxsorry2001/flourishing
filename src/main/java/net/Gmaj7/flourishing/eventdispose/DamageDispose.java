@@ -17,6 +17,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.entity.projectile.ThrownTrident;
@@ -27,6 +28,7 @@ import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
+import net.minecraft.world.phys.AABB;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.neoforge.event.entity.living.LivingAttackEvent;
@@ -246,53 +248,62 @@ public class DamageDispose {
         Entity cause = event.getSource().getEntity();
         Entity direct = event.getSource().getDirectEntity();
         LivingEntity target = event.getEntity();
-        if (cause instanceof LivingEntity && !cause.level().isClientSide){
-            boolean vegeance = false;
-            int grave_digger = 0;
-            if(direct == cause) {
-                vegeance = EnchantmentHelper.getTagEnchantmentLevel(FlourishingEnchantments.VENGEANCE.get(), ((LivingEntity) cause).getMainHandItem()) > 0;
-                grave_digger += EnchantmentHelper.getTagEnchantmentLevel(FlourishingEnchantments.GRAVE_DIGGER.get(),((LivingEntity) cause).getMainHandItem());
-            }
-            else if (direct instanceof ThrownTrident){
-                vegeance = EnchantmentHelper.getTagEnchantmentLevel(FlourishingEnchantments.VENGEANCE.get(), ((ThrownTrident) direct).getPickupItemStackOrigin()) > 0;
-                grave_digger += EnchantmentHelper.getTagEnchantmentLevel(FlourishingEnchantments.GRAVE_DIGGER.get(), ((ThrownTrident) direct).getPickupItemStackOrigin());
-            }
-            else if (direct instanceof AbstractArrow){
-                if(((LivingEntity) cause).getMainHandItem().getItem() instanceof ProjectileWeaponItem){
-                    vegeance= EnchantmentHelper.getTagEnchantmentLevel(FlourishingEnchantments.VENGEANCE.get(), ((LivingEntity) cause).getMainHandItem()) > 0;
-                    grave_digger += EnchantmentHelper.getTagEnchantmentLevel(FlourishingEnchantments.GRAVE_DIGGER.get(), ((LivingEntity) cause).getMainHandItem());
+        if(!target.level().isClientSide()){
+            if (cause instanceof LivingEntity){
+                boolean vegeance = false;
+                int grave_digger = 0;
+                if(direct == cause) {
+                    vegeance = EnchantmentHelper.getTagEnchantmentLevel(FlourishingEnchantments.VENGEANCE.get(), ((LivingEntity) cause).getMainHandItem()) > 0;
+                    grave_digger += EnchantmentHelper.getTagEnchantmentLevel(FlourishingEnchantments.GRAVE_DIGGER.get(),((LivingEntity) cause).getMainHandItem());
                 }
-                else if (((LivingEntity) cause).getOffhandItem().getItem() instanceof ProjectileWeaponItem){
-                    vegeance= EnchantmentHelper.getTagEnchantmentLevel(FlourishingEnchantments.VENGEANCE.get(), ((LivingEntity) cause).getOffhandItem()) > 0;
-                    grave_digger += EnchantmentHelper.getTagEnchantmentLevel(FlourishingEnchantments.GRAVE_DIGGER.get(), ((LivingEntity) cause).getOffhandItem());
+                else if (direct instanceof ThrownTrident){
+                    vegeance = EnchantmentHelper.getTagEnchantmentLevel(FlourishingEnchantments.VENGEANCE.get(), ((ThrownTrident) direct).getPickupItemStackOrigin()) > 0;
+                    grave_digger += EnchantmentHelper.getTagEnchantmentLevel(FlourishingEnchantments.GRAVE_DIGGER.get(), ((ThrownTrident) direct).getPickupItemStackOrigin());
                 }
-            }
-            //仇决
-            if(vegeance){
-                if(((LivingEntity) cause).hasEffect(FlourishingEffects.REPULSE_THE_ENEMY.get()))
-                    ((LivingEntity) cause).removeEffect(FlourishingEffects.REPULSE_THE_ENEMY.get());
-                ((LivingEntity) cause).addEffect(new MobEffectInstance(FlourishingEffects.VENGEANCE.get(), 600 ,((LivingEntity) cause).hasEffect(FlourishingEffects.VENGEANCE.get()) ? ((LivingEntity) cause).getEffect(FlourishingEffects.VENGEANCE.get()).getAmplifier() + 1  : 0));
-            }
-            //行殇
-            if(grave_digger > 0) {
-                ResourceLocation resourceLocation = target.getLootTable();
-                LootTable lootTable = target.level().getServer().getLootData().getLootTable(resourceLocation);
-                LootParams.Builder lootparams$builder = new LootParams.Builder((ServerLevel)target.level())
-                        .withParameter(LootContextParams.THIS_ENTITY, target)
-                        .withParameter(LootContextParams.ORIGIN, target.position())
-                        .withParameter(LootContextParams.DAMAGE_SOURCE, event.getSource())
-                        .withOptionalParameter(LootContextParams.KILLER_ENTITY, cause)
-                        .withOptionalParameter(LootContextParams.DIRECT_KILLER_ENTITY, direct);
-                if (cause instanceof Player) {
-                    lootparams$builder = lootparams$builder.withParameter(LootContextParams.LAST_DAMAGE_PLAYER, (Player) cause)
-                            .withLuck(2048F);
-                    if(grave_digger == 2){
-                        ((Player) cause).addEffect(new MobEffectInstance(MobEffects.HEAL,1,1));
+                else if (direct instanceof AbstractArrow){
+                    if(((LivingEntity) cause).getMainHandItem().getItem() instanceof ProjectileWeaponItem){
+                        vegeance= EnchantmentHelper.getTagEnchantmentLevel(FlourishingEnchantments.VENGEANCE.get(), ((LivingEntity) cause).getMainHandItem()) > 0;
+                        grave_digger += EnchantmentHelper.getTagEnchantmentLevel(FlourishingEnchantments.GRAVE_DIGGER.get(), ((LivingEntity) cause).getMainHandItem());
+                    }
+                    else if (((LivingEntity) cause).getOffhandItem().getItem() instanceof ProjectileWeaponItem){
+                        vegeance= EnchantmentHelper.getTagEnchantmentLevel(FlourishingEnchantments.VENGEANCE.get(), ((LivingEntity) cause).getOffhandItem()) > 0;
+                        grave_digger += EnchantmentHelper.getTagEnchantmentLevel(FlourishingEnchantments.GRAVE_DIGGER.get(), ((LivingEntity) cause).getOffhandItem());
                     }
                 }
+                //仇决
+                if(vegeance){
+                    if(((LivingEntity) cause).hasEffect(FlourishingEffects.REPULSE_THE_ENEMY.get()))
+                        ((LivingEntity) cause).removeEffect(FlourishingEffects.REPULSE_THE_ENEMY.get());
+                    ((LivingEntity) cause).addEffect(new MobEffectInstance(FlourishingEffects.VENGEANCE.get(), 600 ,((LivingEntity) cause).hasEffect(FlourishingEffects.VENGEANCE.get()) ? ((LivingEntity) cause).getEffect(FlourishingEffects.VENGEANCE.get()).getAmplifier() + 1  : 0));
+                }
+                //行殇
+                if(grave_digger > 0) {
+                    ResourceLocation resourceLocation = target.getLootTable();
+                    LootTable lootTable = target.level().getServer().getLootData().getLootTable(resourceLocation);
+                    LootParams.Builder lootparams$builder = new LootParams.Builder((ServerLevel)target.level())
+                            .withParameter(LootContextParams.THIS_ENTITY, target)
+                            .withParameter(LootContextParams.ORIGIN, target.position())
+                            .withParameter(LootContextParams.DAMAGE_SOURCE, event.getSource())
+                            .withOptionalParameter(LootContextParams.KILLER_ENTITY, cause)
+                            .withOptionalParameter(LootContextParams.DIRECT_KILLER_ENTITY, direct);
+                    if (cause instanceof Player) {
+                        lootparams$builder = lootparams$builder.withParameter(LootContextParams.LAST_DAMAGE_PLAYER, (Player) cause)
+                                .withLuck(2048F);
+                        if(grave_digger == 2){
+                            ((Player) cause).addEffect(new MobEffectInstance(MobEffects.HEAL,1,1));
+                        }
+                    }
 
-                LootParams lootparams = lootparams$builder.create(LootContextParamSets.ENTITY);
-                lootTable.getRandomItems(lootparams, target.getLootTableSeed(), target::spawnAtLocation);
+                    LootParams lootparams = lootparams$builder.create(LootContextParamSets.ENTITY);
+                    lootTable.getRandomItems(lootparams, target.getLootTableSeed(), target::spawnAtLocation);
+                }
+            }
+            //明鉴
+            if(EnchantmentHelper.getTagEnchantmentLevel(FlourishingEnchantments.SEE_CLEARLY.get(), target.getMainHandItem()) > 0){
+                ItemStack itemStack = target.getMainHandItem();
+                target.setItemInHand(InteractionHand.MAIN_HAND, ItemStack.EMPTY);
+                ItemEntity itemEntity = new ItemEntity(event.getEntity().level(), target.getX(), target.getY(), target.getZ(), itemStack);
+                target.level().addFreshEntity(itemEntity);
             }
         }
     }

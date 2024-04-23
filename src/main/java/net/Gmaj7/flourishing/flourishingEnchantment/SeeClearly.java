@@ -5,13 +5,14 @@ import net.minecraft.world.item.*;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentCategory;
 
-public class ArmyDestroyer extends Enchantment {
-    protected ArmyDestroyer(Rarity pRarity, EnchantmentCategory pCategory, EquipmentSlot... pApplicableSlots) {
+public class SeeClearly extends Enchantment {
+    protected SeeClearly(Rarity pRarity, EnchantmentCategory pCategory, EquipmentSlot... pApplicableSlots) {
         super(pRarity, pCategory, pApplicableSlots);
     }
+
     @Override
     public int getMaxLevel() {
-        return 2;
+        return 1;
     }
 
     @Override
@@ -23,7 +24,7 @@ public class ArmyDestroyer extends Enchantment {
     public boolean canEnchant(ItemStack pStack) {
         return pStack.getItem() instanceof SwordItem
                 || pStack.getItem() instanceof AxeItem
-                || pStack.getItem() instanceof TridentItem
-                || pStack.getItem() instanceof ProjectileWeaponItem;
+                || pStack.getItem() instanceof ProjectileWeaponItem
+                || pStack.getItem() instanceof TridentItem;
     }
 }
