@@ -77,7 +77,7 @@ public class ClickDispose {
             player.swing(interact.getHand(), true);
             ((Monster) target).targetSelector.removeGoal(new NearestAttackableTargetGoal<>((Mob) target, Player.class, true));
             ((Monster) target).targetSelector.addGoal( 1,new NearestAttackableTargetGoal<>((Mob) target, Monster.class, true));
-            ((Monster) target).addEffect(new MobEffectInstance(MobEffects.SATURATION, 2400, 0));
+            ((Monster) target).addEffect(new MobEffectInstance(MobEffects.DAMAGE_BOOST, 2400, 0));
         }
     }
 }
