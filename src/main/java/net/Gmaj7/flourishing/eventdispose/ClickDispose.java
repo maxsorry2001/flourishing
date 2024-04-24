@@ -5,6 +5,7 @@ import net.Gmaj7.flourishing.flourishingEffect.FlourishingEffects;
 import net.Gmaj7.flourishing.flourishingEnchantment.FlourishingEnchantments;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
@@ -66,12 +67,17 @@ public class ClickDispose {
             player.setItemInHand(interact.getHand(), ItemStack.EMPTY);
             List<Monster> list = level.getEntitiesOfClass(Monster.class, new AABB(target.getX() -20, target.getY() - 3, target.getZ() - 20, target.getX() + 20, target.getY() + 3, target.getZ() + 20));
             for (Monster monster : list){
-                if(monster == target) continue;
+                if(monster == target){
+                    ((Monster) target).setTarget(null);
+                    continue;
+                }
                 ((Monster) target).setTarget(monster);
                 break;
             }
+            player.swing(interact.getHand(), true);
             ((Monster) target).targetSelector.removeGoal(new NearestAttackableTargetGoal<>((Mob) target, Player.class, true));
-            ((Monster) target).targetSelector.addGoal( 2,new NearestAttackableTargetGoal<>((Mob) target, Monster.class, true));
+            ((Monster) target).targetSelector.addGoal( 1,new NearestAttackableTargetGoal<>((Mob) target, Monster.class, true));
+            ((Monster) target).addEffect(new MobEffectInstance(MobEffects.SATURATION, 2400, 0));
         }
     }
 }
