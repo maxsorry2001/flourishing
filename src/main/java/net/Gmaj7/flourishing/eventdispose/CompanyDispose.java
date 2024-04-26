@@ -18,21 +18,6 @@ import java.util.Random;
 
 @Mod.EventBusSubscriber(modid = Flourishing.MODID)
 public class CompanyDispose {
-    static ItemStack[] itemStackPool ={new ItemStack(Items.WOODEN_SHOVEL), new ItemStack(Items.STONE_SHOVEL),
-            new ItemStack(Items.IRON_SHOVEL), new ItemStack(Items.GOLDEN_SHOVEL),
-            new ItemStack(Items.DIAMOND_SHOVEL), new ItemStack(Items.NETHERITE_SHOVEL),
-            new ItemStack(Items.WOODEN_PICKAXE), new ItemStack(Items.STONE_PICKAXE),
-            new ItemStack(Items.IRON_PICKAXE),new ItemStack(Items.GOLDEN_PICKAXE),
-            new ItemStack(Items.DIAMOND_PICKAXE), new ItemStack(Items.NETHERITE_PICKAXE),
-            new ItemStack(Items.WOODEN_AXE), new ItemStack(Items.STONE_AXE),
-            new ItemStack(Items.IRON_AXE),new ItemStack(Items.GOLDEN_AXE),
-            new ItemStack(Items.DIAMOND_AXE), new ItemStack(Items.NETHERITE_AXE),
-            new ItemStack(Items.WOODEN_SWORD), new ItemStack(Items.STONE_SWORD),
-            new ItemStack(Items.IRON_SWORD),new ItemStack(Items.GOLDEN_SWORD),
-            new ItemStack(Items.DIAMOND_SWORD), new ItemStack(Items.NETHERITE_SWORD),
-            new ItemStack(Items.WOODEN_HOE), new ItemStack(Items.STONE_HOE),
-            new ItemStack(Items.IRON_HOE),new ItemStack(Items.GOLDEN_HOE),
-            new ItemStack(Items.DIAMOND_HOE), new ItemStack(Items.NETHERITE_HOE)};
     @SubscribeEvent
     public static void old_to_new(PlayerDestroyItemEvent event){
         ItemStack itemStack = event.getOriginal();
@@ -40,8 +25,7 @@ public class CompanyDispose {
         if(EnchantmentHelper.getTagEnchantmentLevel(FlourishingEnchantments.COMPANY.get(), itemStack) > 0){
             Map<Enchantment, Integer> enchantmentIntegerMap = new HashMap<>();
             enchantmentIntegerMap.put(FlourishingEnchantments.COMPANY.get(), 1);
-            int n = new Random().nextInt(30);
-            ItemStack itemStackNew = itemStackPool[n];
+            ItemStack itemStackNew = LootPool.itemStackEquip[new Random().nextInt(LootPool.itemStackEquip.length)];
             itemStackNew.setDamageValue(itemStackNew.getMaxDamage() - 1);
             EnchantmentHelper.setEnchantments(enchantmentIntegerMap, itemStackNew);
             ItemEntity itemEntity = new ItemEntity(player.level(), player.getX(), player.getY(), player.getZ(), itemStackNew);

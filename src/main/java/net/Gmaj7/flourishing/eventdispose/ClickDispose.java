@@ -19,7 +19,9 @@ import net.minecraft.world.item.alchemy.PotionUtils;
 import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.SuspiciousEffectHolder;
 import net.minecraft.world.phys.AABB;
+import net.neoforged.bus.api.Event;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
@@ -29,14 +31,6 @@ import java.util.Random;
 
 @Mod.EventBusSubscriber(modid = Flourishing.MODID)
 public class ClickDispose {
-    static Potion[] potions = {Potions.NIGHT_VISION, Potions.FIRE_RESISTANCE, Potions.HARMING, Potions.HEALING, Potions.INVISIBILITY,
-            Potions.LEAPING, Potions.LUCK, Potions.REGENERATION, Potions.SLOWNESS, Potions.STRENGTH,
-            Potions.SLOW_FALLING, Potions.SWIFTNESS, Potions.TURTLE_MASTER, Potions.WATER_BREATHING, Potions.WEAKNESS,
-            Potions.LONG_FIRE_RESISTANCE, Potions.LONG_INVISIBILITY, Potions.LONG_LEAPING, Potions.LONG_REGENERATION,
-            Potions.LONG_NIGHT_VISION, Potions.LONG_SLOW_FALLING, Potions.LONG_SLOWNESS, Potions.LONG_STRENGTH,
-            Potions.LONG_SWIFTNESS, Potions.LONG_TURTLE_MASTER, Potions.LONG_WATER_BREATHING, Potions.LONG_WEAKNESS,
-            Potions.STRONG_HARMING, Potions.STRONG_HEALING, Potions.STRONG_LEAPING, Potions.STRONG_REGENERATION, Potions.STRONG_SLOWNESS,
-            Potions.STRONG_STRENGTH, Potions.STRONG_SWIFTNESS, Potions.STRONG_TURTLE_MASTER};
     @SubscribeEvent
     public static void RightClick(PlayerInteractEvent.RightClickItem event){
         Player player = event.getEntity();
@@ -46,25 +40,59 @@ public class ClickDispose {
                 && cabFlag > 0
                 && player.isShiftKeyDown()
                 && !player.hasEffect(FlourishingEffects.CHECK_AND_BALANCE.get())){
+            int count =  player.getItemInHand(event.getHand()).getCount() + (cabFlag == 2 ? player.getItemInHand(event.getHand()).getCount() / 16 * 4 :0);
             if(player.getItemInHand(event.getHand()).getItem() instanceof ArrowItem){
-                for (int i = 0; i < player.getItemInHand(event.getHand()).getCount() + (cabFlag == 2 ? player.getItemInHand(event.getHand()).getCount() / 16 * 4 :0); i++){
-                    ItemStack itemStack = new ItemStack(Items.TIPPED_ARROW);
-                    PotionUtils.setPotion(itemStack, potions[new Random().nextInt(potions.length)]);
+                player.setItemInHand(event.getHand(), ItemStack.EMPTY);
+                for (int i = 0; i < count; i++){
+                    boolean flag = new Random().nextBoolean();
+                    ItemStack itemStack;
+                    if(flag) itemStack = new ItemStack(Items.ARROW);
+                    else{
+                        itemStack = new ItemStack(Items.TIPPED_ARROW);
+                        PotionUtils.setPotion(itemStack, LootPool.potions[new Random().nextInt(LootPool.potions.length)]);
+                    }
                     ItemEntity itemEntity = new ItemEntity(player.level(), player.getX(), player.getY(), player.getZ(), itemStack);
-                    player.setItemInHand(event.getHand(), ItemStack.EMPTY);
                     player.level().addFreshEntity(itemEntity);
                 }
             }
             else if(player.getItemInHand(event.getHand()).getItem() instanceof PotionItem){
-                for (int i = 0; i < player.getItemInHand(event.getHand()).getCount() + (cabFlag == 2 ? player.getItemInHand(event.getHand()).getCount() / 16 * 4 :0); i++){
-                    ItemStack itemStack = new ItemStack(Items.POTION);
-                    PotionUtils.setPotion(itemStack, potions[new Random().nextInt(potions.length)]);
+                player.setItemInHand(event.getHand(), ItemStack.EMPTY);
+                for (int i = 0; i < count + cabFlag - 1; i++){
+                    ItemStack itemStack = null;
+                    switch (new Random().nextInt(3)){
+                        case 0 -> itemStack = new ItemStack(Items.POTION);
+                        case 1 -> itemStack = new ItemStack(Items.SPLASH_POTION);
+                        case 2 -> itemStack = new ItemStack(Items.LINGERING_POTION);
+                    }
+                    PotionUtils.setPotion(itemStack, LootPool.potions[new Random().nextInt(LootPool.potions.length)]);
                     ItemEntity itemEntity = new ItemEntity(player.level(), player.getX(), player.getY(), player.getZ(), itemStack);
-                    player.setItemInHand(event.getHand(), ItemStack.EMPTY);
                     player.level().addFreshEntity(itemEntity);
                 }
             }
-            player.addEffect(new MobEffectInstance(FlourishingEffects.CHECK_AND_BALANCE.get(), 1200, 0));
+            else if(new LootPool().isEquipment(player.getItemInHand(event.getHand()))){
+                player.setItemInHand(event.getHand(), ItemStack.EMPTY);
+                for (int i = 0; i < count; i++){
+                    ItemStack itemStack = LootPool.itemStackEquip[new Random().nextInt(LootPool.itemStackEquip.length)];
+                    ItemEntity itemEntity = new ItemEntity(player.level(), player.getX(), player.getY(), player.getZ(), itemStack);
+                    player.level().addFreshEntity(itemEntity);
+                }
+            }
+            else if(player.getItemInHand(event.getHand()).isEdible()){
+                player.setItemInHand(event.getHand(), ItemStack.EMPTY);
+                if(player.getItemInHand(event.getHand()).getMaxStackSize() == 1)
+                    count += 1;
+                for (int i = 0; i < count; i++){
+                    ItemStack itemStack = LootPool.foods[new Random().nextInt(LootPool.foods.length)];
+                    if(itemStack.getItem() == Items.SUSPICIOUS_STEW){
+                        List<SuspiciousEffectHolder> list = SuspiciousEffectHolder.getAllEffectHolders();
+                        SuspiciousStewItem.saveMobEffects(itemStack, list.get(new Random().nextInt(list.size())).getSuspiciousEffects());
+                    }
+                    ItemEntity itemEntity = new ItemEntity(player.level(), player.getX(), player.getY(), player.getZ(), itemStack);
+                    player.level().addFreshEntity(itemEntity);
+                }
+            }
+            player.addEffect(new MobEffectInstance(FlourishingEffects.CHECK_AND_BALANCE.get(), 600, 0));
+            event.setResult(Event.Result.DENY);
         }
     }
 
