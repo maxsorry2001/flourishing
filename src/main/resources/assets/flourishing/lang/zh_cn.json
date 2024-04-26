@@ -19,6 +19,9 @@
   "enchantment.flourishing.unfeeling": "绝情",
   "enchantment.flourishing.nirvana": "涅槃",
   "enchantment.flourishing.see_clearly": "明鉴",
+  "enchantment.flourishing.self_writing": "自书",
 
-  "death.attack.health_loose" : "%1$s耗尽了所有生命"
+  "death.attack.health_loose" : "%1$s耗尽了所有生命",
+
+  "has_been_got_self_write" : "已自书"
 }

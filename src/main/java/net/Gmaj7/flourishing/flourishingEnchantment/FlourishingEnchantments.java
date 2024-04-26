@@ -18,41 +18,42 @@ public class FlourishingEnchantments {
     private static final Predicate<Item> sword = item -> item instanceof SwordItem;
     private static final Predicate<Item> bow = item -> item instanceof BowItem;
     private static final Predicate<Item> crossbow = item -> item instanceof CrossbowItem;
-    private static final Predicate<Item> projectweapen = item -> item instanceof ProjectileWeaponItem;
+    private static final Predicate<Item> project_weapon = item -> item instanceof ProjectileWeaponItem;
     private static final Predicate<Item> tiered = item -> item instanceof TieredItem;
 
-    public static Supplier<Enchantment> ARMYDESTROYER = ENCHANTMENTS.register("army_destroyer",
+    public static Supplier<Enchantment> ARMY_DESTROYER = ENCHANTMENTS.register("army_destroyer",
             () -> new ArmyDestroyer(Enchantment.Rarity.COMMON, EnchantmentCategory.create("army_destroyer_can_enchant",
-                                trident.or(sword).or(projectweapen))));
+                                trident.or(sword).or(project_weapon))));
     public static Supplier<Enchantment> COMPANY = ENCHANTMENTS.register("company",
             () -> new Company(Enchantment.Rarity.COMMON,EnchantmentCategory.create("company_enchant",tiered)));
-    public static Supplier<Enchantment> ARRORGANT_AND_WILFUL = ENCHANTMENTS.register("arrogant_and_wilful",
+    public static Supplier<Enchantment> ARROGANT_AND_WILFUL = ENCHANTMENTS.register("arrogant_and_wilful",
             () -> new ArrogantAndWilful(Enchantment.Rarity.COMMON, EnchantmentCategory.create("aaw_can_enchant",
-                                trident.or(sword).or(projectweapen))));
+                                trident.or(sword).or(project_weapon))));
     public static Supplier<Enchantment> REPULSE_THE_ENEMY = ENCHANTMENTS.register("repulse_the_enemy",
             () -> new RepulseTheEnemy(Enchantment.Rarity.COMMON, EnchantmentCategory.create("rte_can_enchant",
-                                trident.or(sword).or(projectweapen))));
+                                trident.or(sword).or(project_weapon))));
     public static Supplier<Enchantment> VENGEANCE = ENCHANTMENTS.register("vengeance",
             () -> new RepulseTheEnemy(Enchantment.Rarity.COMMON, EnchantmentCategory.create("vengeance_can_enchant",
-                    trident.or(sword).or(projectweapen))));
-    public static Supplier<Enchantment> CHECK_AND_BALABCE = ENCHANTMENTS.register("check_and_balance",
-            () -> new CheckAndBalance(Enchantment.Rarity.COMMON, EnchantmentCategory.create("cab_can_enchant",
-                    projectweapen)));
+                    trident.or(sword).or(project_weapon))));
+    public static Supplier<Enchantment> CHECK_AND_BALANCE = ENCHANTMENTS.register("check_and_balance",
+            () -> new CheckAndBalance(Enchantment.Rarity.COMMON, EnchantmentCategory.ARMOR_CHEST));
     public static Supplier<Enchantment> GRAVE_DIGGER = ENCHANTMENTS.register("grave_digger",
             () -> new GraveDigger(Enchantment.Rarity.COMMON, EnchantmentCategory.create("grave_digger",
-                    trident.or(sword).or(projectweapen))));
+                    trident.or(sword).or(project_weapon))));
     public static Supplier<Enchantment> BANISH = ENCHANTMENTS.register("banish",
             () -> new Banish(Enchantment.Rarity.COMMON, EnchantmentCategory.ARMOR_CHEST));
     public static Supplier<Enchantment> ROAR = ENCHANTMENTS.register("roar",
             () -> new Roar(Enchantment.Rarity.COMMON, EnchantmentCategory.WEAPON));
     public static Supplier<Enchantment> UNFEELING = ENCHANTMENTS.register("unfeeling",
             () -> new Unfelling(Enchantment.Rarity.COMMON,EnchantmentCategory.create("unfeeling",
-                    trident.or(sword).or(projectweapen))));
+                    trident.or(sword).or(project_weapon))));
     public static Supplier<Enchantment> Nirvana = ENCHANTMENTS.register("nirvana",
             () -> new Nirvana(Enchantment.Rarity.COMMON, EnchantmentCategory.ARMOR_HEAD));
     public static Supplier<Enchantment> SEE_CLEARLY = ENCHANTMENTS.register("see_clearly",
             () -> new SeeClearly(Enchantment.Rarity.COMMON, EnchantmentCategory.create("see_clearly_can_enchantment",
-                    trident.or(sword).or(projectweapen))));
+                    trident.or(sword).or(project_weapon))));
+    public static Supplier<Enchantment> SELF_WRITING = ENCHANTMENTS.register("self_writing",
+            () -> new SelfWriting(Enchantment.Rarity.COMMON, EnchantmentCategory.ARMOR_CHEST));
 
     public static void register(IEventBus eventBus){
         ENCHANTMENTS.register(eventBus);

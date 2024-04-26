@@ -19,6 +19,9 @@
   "enchantment.flourishing.unfeeling": "Unfeeling",
   "enchantment.flourishing.nirvana": "Nirvana",
   "enchantment.flourishing.see_clearly": "See Clearly",
+  "enchantment.flourishing.self_writing": "Self Writing",
 
-  "death.attack.health_loose" : "%1$s has lost all health points"
+  "death.attack.health_loose" : "%1$s has lost all health points",
+
+  "has_been_got_self_write" : "Has been got Self Write"
 }
