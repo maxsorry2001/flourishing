@@ -25,7 +25,7 @@ public class CompanyDispose {
         if(EnchantmentHelper.getTagEnchantmentLevel(FlourishingEnchantments.COMPANY.get(), itemStack) > 0){
             Map<Enchantment, Integer> enchantmentIntegerMap = new HashMap<>();
             enchantmentIntegerMap.put(FlourishingEnchantments.COMPANY.get(), 1);
-            ItemStack itemStackNew = LootPool.itemStackEquip[new Random().nextInt(LootPool.itemStackEquip.length)];
+            ItemStack itemStackNew = LootPool.itemStackEquip[new Random().nextInt(30)];
             itemStackNew.setDamageValue(itemStackNew.getMaxDamage() - 1);
             EnchantmentHelper.setEnchantments(enchantmentIntegerMap, itemStackNew);
             ItemEntity itemEntity = new ItemEntity(player.level(), player.getX(), player.getY(), player.getZ(), itemStackNew);
