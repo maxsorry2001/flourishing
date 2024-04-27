@@ -1,5 +1,6 @@
 package net.Gmaj7.flourishing.flourishingEnchantment;
 
+import net.Gmaj7.flourishing.eventdispose.LootPool;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TieredItem;
@@ -23,6 +24,6 @@ public class Company extends Enchantment {
 
     @Override
     public boolean canEnchant(ItemStack pStack) {
-        return pStack.getItem() instanceof TieredItem;
+        return new LootPool().isEquipment(pStack);
     }
 }
