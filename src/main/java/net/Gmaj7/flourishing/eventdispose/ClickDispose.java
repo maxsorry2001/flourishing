@@ -41,6 +41,7 @@ public class ClickDispose {
                 && player.isShiftKeyDown()
                 && !player.hasEffect(FlourishingEffects.CHECK_AND_BALANCE.get())){
             int count =  player.getItemInHand(event.getHand()).getCount() + (cabFlag == 2 ? player.getItemInHand(event.getHand()).getCount() / 16 * 4 :0);
+            if(player.getItemInHand(event.getHand()).getMaxStackSize() == 1 && cabFlag == 2) count += 1;
             if(player.getItemInHand(event.getHand()).getItem() instanceof ArrowItem){
                 player.setItemInHand(event.getHand(), ItemStack.EMPTY);
                 for (int i = 0; i < count; i++){
@@ -57,7 +58,7 @@ public class ClickDispose {
             }
             else if(player.getItemInHand(event.getHand()).getItem() instanceof PotionItem){
                 player.setItemInHand(event.getHand(), ItemStack.EMPTY);
-                for (int i = 0; i < count + cabFlag - 1; i++){
+                for (int i = 0; i < count; i++){
                     ItemStack itemStack = null;
                     switch (new Random().nextInt(3)){
                         case 0 -> itemStack = new ItemStack(Items.POTION);

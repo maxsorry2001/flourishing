@@ -39,7 +39,7 @@ public class LootPool {
             Potions.LONG_NIGHT_VISION, Potions.LONG_SLOW_FALLING, Potions.LONG_SLOWNESS, Potions.LONG_STRENGTH,
             Potions.LONG_SWIFTNESS, Potions.LONG_TURTLE_MASTER, Potions.LONG_WATER_BREATHING, Potions.LONG_WEAKNESS,
             Potions.STRONG_HARMING, Potions.STRONG_HEALING, Potions.STRONG_LEAPING, Potions.STRONG_REGENERATION, Potions.STRONG_SLOWNESS,
-            Potions.STRONG_STRENGTH, Potions.STRONG_SWIFTNESS, Potions.STRONG_TURTLE_MASTER};
+            Potions.STRONG_STRENGTH, Potions.STRONG_SWIFTNESS, Potions.STRONG_TURTLE_MASTER, Potions.WATER};
 
     static ItemStack[] foods = {new ItemStack(Items.APPLE), new ItemStack(Items.GOLDEN_APPLE), new ItemStack(Items.ENCHANTED_GOLDEN_APPLE),
             new ItemStack(Items.MELON_SLICE), new ItemStack(Items.SWEET_BERRIES), new ItemStack(Items.GLOW_BERRIES),
