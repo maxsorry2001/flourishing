@@ -20,6 +20,8 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.entity.projectile.ThrownTrident;
+import net.minecraft.world.item.BowItem;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ProjectileWeaponItem;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
@@ -49,7 +51,7 @@ public class DamageDispose {
             if (source instanceof LivingEntity) {
                 if(((LivingEntity) source).hasEffect(FlourishingEffects.BANISHMENT.get())) event.setCanceled(true);
                 int armyDestroyer = 0;
-                boolean unfeeling = false;
+                boolean unfeeling = false,  precision = false;
                 if(direct == source) {
                     armyDestroyer = EnchantmentHelper.getTagEnchantmentLevel(FlourishingEnchantments.ARMY_DESTROYER.get(), ((LivingEntity) source).getMainHandItem());
                     unfeeling = EnchantmentHelper.getTagEnchantmentLevel(FlourishingEnchantments.UNFEELING.get(), ((LivingEntity) source).getMainHandItem()) > 0;
@@ -60,21 +62,24 @@ public class DamageDispose {
                     unfeeling = EnchantmentHelper.getTagEnchantmentLevel(FlourishingEnchantments.UNFEELING.get(),((ThrownTrident) direct).getPickupItemStackOrigin()) > 0;
                 }
                 else if (direct instanceof AbstractArrow){
-                    if(((LivingEntity) source).getMainHandItem().getItem() instanceof ProjectileWeaponItem ) {
-                        armyDestroyer = EnchantmentHelper.getTagEnchantmentLevel(FlourishingEnchantments.ARMY_DESTROYER.get(),((LivingEntity) source).getMainHandItem());
-                        unfeeling = EnchantmentHelper.getTagEnchantmentLevel(FlourishingEnchantments.UNFEELING.get(),((LivingEntity) source).getMainHandItem()) > 0;
+                    for(InteractionHand hand : InteractionHand.values()){
+                        ItemStack HandItem = ((LivingEntity) source).getItemInHand(hand);
+                        if(HandItem.getItem() instanceof ProjectileWeaponItem ) {
+                            armyDestroyer = EnchantmentHelper.getTagEnchantmentLevel(FlourishingEnchantments.ARMY_DESTROYER.get(),((LivingEntity) source).getMainHandItem());
+                            unfeeling = EnchantmentHelper.getTagEnchantmentLevel(FlourishingEnchantments.UNFEELING.get(),((LivingEntity) source).getMainHandItem()) > 0;
+                            if(HandItem.getItem() instanceof BowItem) precision = EnchantmentHelper.getTagEnchantmentLevel(FlourishingEnchantments.PRECISION.get(), HandItem) > 0;
+                        }
+                        if(unfeeling) direct.remove(Entity.RemovalReason.DISCARDED);
+                        break;
                     }
-                    else if (((LivingEntity) source).getOffhandItem().getItem() instanceof ProjectileWeaponItem) {
-                        armyDestroyer = EnchantmentHelper.getTagEnchantmentLevel(FlourishingEnchantments.ARMY_DESTROYER.get(),((LivingEntity) source).getOffhandItem());
-                        unfeeling = EnchantmentHelper.getTagEnchantmentLevel(FlourishingEnchantments.UNFEELING.get(),((LivingEntity) source).getOffhandItem()) > 0;
-                    }
-                    if(unfeeling) direct.remove(Entity.RemovalReason.DISCARDED);
                 }
+                //绝情
                 if(unfeeling){
                     event.setCanceled(true);
                     Holder<DamageType> holder = target.level().registryAccess().registryOrThrow(Registries.DAMAGE_TYPE).getHolderOrThrow(FlourishingDamageTypes.HEALTH_LOOSE);
                     target.hurt(new DamageSource(holder), event.getAmount());
                 }
+                //破军
                 if (armyDestroyer > 0) {
                     for (int i = 0; i < 6; i++) {
                         ItemStack itemStack = (target.getItemBySlot(equipmentSlots[i]));
@@ -85,6 +90,7 @@ public class DamageDispose {
                         }
                     }
                 }
+                if(precision) target.addEffect(new MobEffectInstance(FlourishingEffects.FRAGILE.get(), 600,0));
             }
         }
     }
@@ -95,8 +101,9 @@ public class DamageDispose {
             Entity source = event.getSource().getEntity();
             Entity direct = event.getSource().getDirectEntity();
             LivingEntity target = event.getEntity();
-            int armyDestroyer = 0, roarRank = 0;
+            int armyDestroyer = 0, roarRank = 0, precision = 0;
             boolean aaw = false/*骄恣*/, rte = false/*却敌*/;
+            InteractionHand Bowhand = InteractionHand.MAIN_HAND;
             if (source instanceof LivingEntity) {
                 if(direct == source){
                     armyDestroyer = EnchantmentHelper.getTagEnchantmentLevel(FlourishingEnchantments.ARMY_DESTROYER.get(),((LivingEntity) source).getMainHandItem());
@@ -110,15 +117,16 @@ public class DamageDispose {
                     rte = EnchantmentHelper.getTagEnchantmentLevel(FlourishingEnchantments.REPULSE_THE_ENEMY.get(), ((ThrownTrident) direct).getPickupItemStackOrigin()) == 1;
                 }
                 else if (direct instanceof AbstractArrow){
-                    if(((LivingEntity) source).getMainHandItem().getItem() instanceof ProjectileWeaponItem){
-                        armyDestroyer = EnchantmentHelper.getTagEnchantmentLevel(FlourishingEnchantments.ARMY_DESTROYER.get(),((LivingEntity) source).getMainHandItem());
-                        aaw = EnchantmentHelper.getTagEnchantmentLevel(FlourishingEnchantments.ARROGANT_AND_WILFUL.get(),((LivingEntity) source).getMainHandItem()) == 1;
-                        rte = EnchantmentHelper.getTagEnchantmentLevel(FlourishingEnchantments.REPULSE_THE_ENEMY.get(), ((LivingEntity) source).getMainHandItem()) == 1;
-                    }
-                    else if (((LivingEntity) source).getOffhandItem().getItem() instanceof ProjectileWeaponItem){
-                        armyDestroyer = EnchantmentHelper.getTagEnchantmentLevel(FlourishingEnchantments.ARMY_DESTROYER.get(),((LivingEntity) source).getOffhandItem());
-                        aaw = EnchantmentHelper.getTagEnchantmentLevel(FlourishingEnchantments.ARROGANT_AND_WILFUL.get(),((LivingEntity) source).getOffhandItem()) == 1;
-                        rte = EnchantmentHelper.getTagEnchantmentLevel(FlourishingEnchantments.REPULSE_THE_ENEMY.get(), ((LivingEntity) source).getOffhandItem()) == 1;
+                    for (InteractionHand hand : InteractionHand.values()){
+                        ItemStack HandItem = ((LivingEntity) source).getItemInHand(hand);
+                        if(HandItem.getItem() instanceof ProjectileWeaponItem){
+                            armyDestroyer = EnchantmentHelper.getTagEnchantmentLevel(FlourishingEnchantments.ARMY_DESTROYER.get(),((LivingEntity) source).getMainHandItem());
+                            aaw = EnchantmentHelper.getTagEnchantmentLevel(FlourishingEnchantments.ARROGANT_AND_WILFUL.get(),((LivingEntity) source).getMainHandItem()) == 1;
+                            rte = EnchantmentHelper.getTagEnchantmentLevel(FlourishingEnchantments.REPULSE_THE_ENEMY.get(), ((LivingEntity) source).getMainHandItem()) == 1;
+                            if(HandItem.getItem() instanceof BowItem) precision = EnchantmentHelper.getTagEnchantmentLevel(FlourishingEnchantments.PRECISION.get(), HandItem);
+                            Bowhand = hand;
+                            break;
+                        }
                     }
                 }
                 //破军
@@ -204,30 +212,56 @@ public class DamageDispose {
                     ((LivingEntity) source).addEffect(new MobEffectInstance(FlourishingEffects.BANISHMENT.get(), 600,0));
                 //咆哮
                 if(((LivingEntity) source).hasEffect(FlourishingEffects.ROAR.get()) && roarRank > 1){
-                    switch (roarRank){
-                        case 2 : {
+                    switch (roarRank) {
+                        case 2 -> {
                             damageAdd += target.getMaxHealth() * 0.20F;
-                            break;
                         }
-                        case 3 : {
+                        case 3 -> {
                             damageAdd += target.getMaxHealth() * 0.30F;
+                        }
+                    }
+                }//烈弓
+                if(precision > 0){
+                    switch (precision) {
+                        case 1 -> {
+                        }
+                        case 2 -> {
+                            if (((LivingEntity) source).getHealth() / ((LivingEntity) source).getMaxHealth() < target.getHealth() / target.getMaxHealth())
+                                damageAdd += target.getMaxHealth() * 0.2F;
+                        }
+                        case 3 -> {
+                            if (((LivingEntity) source).getItemInHand(Bowhand).hasTag() && ((LivingEntity) source).getItemInHand(Bowhand).getTag().contains("flourishing.precision_food")) {
+                                damageAdd += target.getMaxHealth() * 0.2F;
+                                ((LivingEntity) source).getItemInHand(Bowhand).getTag().remove("flourishing.precision_food");
+                            }
+                            if (((LivingEntity) source).getItemInHand(Bowhand).hasTag() && ((LivingEntity) source).getItemInHand(Bowhand).getTag().contains("flourishing.precision_block")) {
+                                damageAdd += target.getMaxHealth() * 0.2F;
+                                ((LivingEntity) source).getItemInHand(Bowhand).getTag().remove("flourishing.precision_block");
+                            }
+                            if (((LivingEntity) source).getItemInHand(Bowhand).hasTag() && ((LivingEntity) source).getItemInHand(Bowhand).getTag().contains("flourishing.precision_armor")) {
+                                damageAdd += target.getMaxHealth() * 0.2F;
+                                ((LivingEntity) source).getItemInHand(Bowhand).getTag().remove("flourishing.precision_armor");
+                            }
+                            if (((LivingEntity) source).getItemInHand(Bowhand).hasTag() && ((LivingEntity) source).getItemInHand(Bowhand).getTag().contains("flourishing.precision_potion")) {
+                                damageAdd += target.getMaxHealth() * 0.2F;
+                                ((LivingEntity) source).getItemInHand(Bowhand).getTag().remove("flourishing.precision_potion");
+                            }
                         }
                     }
                 }
             }
+            if(target.hasEffect(FlourishingEffects.FRAGILE.get())) damageMul += 0.2F;
             event.setAmount((event.getAmount() + damageAdd) * (1F + damageMul));
             //咆哮负面
             if(source instanceof LivingEntity && ((LivingEntity) source).hasEffect(FlourishingEffects.ROAR.get()) && roarRank > 1 && event.getAmount() < target.getHealth()){
                 Holder<DamageType> holder = source.level().registryAccess().registryOrThrow(Registries.DAMAGE_TYPE).getHolderOrThrow(FlourishingDamageTypes.HEALTH_LOOSE);
-                switch (roarRank){
-                    case 2 : {
+                switch (roarRank) {
+                    case 2 -> {
                         source.hurt(new DamageSource(holder), 2);
-                        break;
                     }
-                    case 3 : {
+                    case 3 -> {
                         source.hurt(new DamageSource(holder), 4);
                         ((LivingEntity) source).getMainHandItem().hurtAndBreak(1, (LivingEntity) source, p -> p.broadcastBreakEvent(InteractionHand.MAIN_HAND));
-                        break;
                     }
                 }
             }

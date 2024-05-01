@@ -16,8 +16,6 @@ public class FlourishingEnchantments {
             = DeferredRegister.create(Registries.ENCHANTMENT, Flourishing.MODID);
     private static final Predicate<Item> trident = item -> item instanceof TridentItem;
     private static final Predicate<Item> sword = item -> item instanceof SwordItem;
-    private static final Predicate<Item> bow = item -> item instanceof BowItem;
-    private static final Predicate<Item> crossbow = item -> item instanceof CrossbowItem;
     private static final Predicate<Item> project_weapon = item -> item instanceof ProjectileWeaponItem;
     private static final Predicate<Item> tiered = item -> item instanceof TieredItem;
 
@@ -54,6 +52,8 @@ public class FlourishingEnchantments {
                     trident.or(sword).or(project_weapon))));
     public static Supplier<Enchantment> SELF_WRITING = ENCHANTMENTS.register("self_writing",
             () -> new SelfWriting(Enchantment.Rarity.COMMON, EnchantmentCategory.ARMOR_CHEST));
+    public static Supplier<Enchantment> PRECISION = ENCHANTMENTS.register("precision",
+            () -> new Precision(Enchantment.Rarity.COMMON, EnchantmentCategory.BOW));
 
     public static void register(IEventBus eventBus){
         ENCHANTMENTS.register(eventBus);

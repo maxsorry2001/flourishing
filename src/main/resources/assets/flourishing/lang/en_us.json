@@ -6,6 +6,7 @@
   "effect.flourishing.banishment": "Banishment",
   "effect.flourishing.roar": "Roar",
   "effect.flourishing.nirvana": "Nirvana",
+  "effect.flourishing.fragile": "Fragile",
 
   "enchantment.flourishing.army_destroyer": "Army destroyer",
   "enchantment.flourishing.company": "Company",
@@ -20,8 +21,13 @@
   "enchantment.flourishing.nirvana": "Nirvana",
   "enchantment.flourishing.see_clearly": "See Clearly",
   "enchantment.flourishing.self_writing": "Self Writing",
+  "enchantment.flourishing.precision": "Precision",
 
   "death.attack.health_loose" : "%1$s has lost all health points",
 
-  "has_been_got_self_write" : "Has been got Self Write"
+  "has_been_got_self_write" : "Has been got Self Write",
+  "precision_food" : "Precision_Food",
+  "precision_armor" : "Precision_Armor",
+  "precision_block" : "Precision_Block",
+  "precision_potion" : "Precision_Potion"
 }
