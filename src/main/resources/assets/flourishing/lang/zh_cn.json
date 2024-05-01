@@ -6,6 +6,7 @@
   "effect.flourishing.banishment": "放逐",
   "effect.flourishing.roar": "咆哮",
   "effect.flourishing.nirvana": "涅槃",
+  "effect.flourishing.fragile": "脆弱",
 
   "enchantment.flourishing.army_destroyer": "破军",
   "enchantment.flourishing.company": "连营",
@@ -20,8 +21,13 @@
   "enchantment.flourishing.nirvana": "涅槃",
   "enchantment.flourishing.see_clearly": "明鉴",
   "enchantment.flourishing.self_writing": "自书",
+  "enchantment.flourishing.precision": "烈弓",
 
   "death.attack.health_loose" : "%1$s耗尽了所有生命",
 
-  "has_been_got_self_write" : "已自书"
+  "has_been_got_self_write" : "已自书",
+  "precision_food" : "烈弓——食物",
+  "precision_armor" : "烈弓——盔甲",
+  "precision_block" : "烈弓——方块",
+  "precision_potion" : "烈弓——药水"
 }

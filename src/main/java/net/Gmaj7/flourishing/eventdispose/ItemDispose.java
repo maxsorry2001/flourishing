@@ -5,6 +5,7 @@ import net.Gmaj7.flourishing.flourishingEnchantment.FlourishingEnchantments;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
@@ -16,6 +17,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.SuspiciousEffectHolder;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.Mod;
+import net.neoforged.neoforge.event.entity.living.LivingEntityUseItemEvent;
 import net.neoforged.neoforge.event.entity.player.EntityItemPickupEvent;
 import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
 
@@ -114,12 +116,53 @@ public class ItemDispose {
     }
 
     @SubscribeEvent
+    public static void ItemUse (LivingEntityUseItemEvent.Finish event){
+        LivingEntity livingEntity = event.getEntity();
+        if(livingEntity instanceof Player){
+            for (int i = 0; i < ((Player) livingEntity).getInventory().getContainerSize(); i++){
+                if (EnchantmentHelper.getTagEnchantmentLevel(FlourishingEnchantments.PRECISION.get(), ((Player) livingEntity).getInventory().getItem(i)) == 3){
+                    if(event.getItem().getItem().isEdible()){
+                        if(!((Player) livingEntity).getInventory().getItem(i).hasTag()){
+                            CompoundTag nbtData = new CompoundTag();
+                            nbtData.putBoolean("flourishing.precision_food", true);
+                            ((Player) livingEntity).getInventory().getItem(i).setTag(nbtData);
+                        }
+                        else if(!((Player) livingEntity).getInventory().getItem(i).getTag().contains("flourishing.precision_food"))
+                            ((Player) livingEntity).getInventory().getItem(i).getTag().putBoolean("flourishing.precision_food", true);
+                    }
+                    if(event.getItem().getItem() instanceof PotionItem && !(event.getItem().getItem() instanceof ThrowablePotionItem)){
+                        if(!((Player) livingEntity).getInventory().getItem(i).hasTag()){
+                            CompoundTag nbtData = new CompoundTag();
+                            nbtData.putBoolean("flourishing.precision_potion", true);
+                            ((Player) livingEntity).getInventory().getItem(i).setTag(nbtData);
+                        }
+                        else if(!((Player) livingEntity).getInventory().getItem(i).getTag().contains("flourishing.precision_potion"))
+                            ((Player) livingEntity).getInventory().getItem(i).getTag().putBoolean("flourishing.precision_potion", true);
+                    }
+                }
+            }
+        }
+    }
+
+    @SubscribeEvent
     public static void toolTip(ItemTooltipEvent event) {
         ItemStack itemStack = event.getItemStack();
         if (itemStack.hasTag()) {
             CompoundTag tag = itemStack.getTag();
             if (tag.contains("flourishing.self_write") && tag.getBoolean("flourishing.self_write")) {
                 event.getToolTip().add(Component.translatable("has_been_got_self_write"));
+            }
+            if (tag.contains("flourishing.precision_food") && tag.getBoolean("flourishing.precision_food")) {
+                event.getToolTip().add(Component.translatable("precision_food"));
+            }
+            if (tag.contains("flourishing.precision_block") && tag.getBoolean("flourishing.precision_block")) {
+                event.getToolTip().add(Component.translatable("precision_block"));
+            }
+            if (tag.contains("flourishing.precision_armor") && tag.getBoolean("flourishing.precision_armor")) {
+                event.getToolTip().add(Component.translatable("precision_armor"));
+            }
+            if (tag.contains("flourishing.precision_potion") && tag.getBoolean("flourishing.precision_potion")) {
+                event.getToolTip().add(Component.translatable("precision_potion"));
             }
         }
     }

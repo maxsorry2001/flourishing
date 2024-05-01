@@ -4,6 +4,7 @@ import net.Gmaj7.flourishing.Flourishing;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.neoforged.bus.api.IEventBus;
@@ -33,6 +34,8 @@ public class FlourishingEffects {
                     .addAttributeModifier(Attributes.ATTACK_SPEED, "99AD56AC-DD61-CDCA-AF87-72819CDCA7D4", 2, AttributeModifier.Operation.MULTIPLY_TOTAL));
     public static final Supplier<MobEffect> NIRVANA = MOB_EFFECT.register("nirvana",
             () -> new FlourishingEffect(MobEffectCategory.NEUTRAL, 63028817));
+    public static final Supplier<MobEffect> FRAGILE = MOB_EFFECT.register("fragile",
+            () -> new FlourishingEffect(MobEffectCategory.HARMFUL, 66389921));
 
     public static void register(IEventBus eventBus){MOB_EFFECT.register(eventBus);}
 }

@@ -30,7 +30,7 @@ public class LootPool {
             new ItemStack(Items.IRON_LEGGINGS), new ItemStack(Items.GOLDEN_LEGGINGS), new ItemStack(Items.NETHERITE_LEGGINGS),
             new ItemStack(Items.DIAMOND_LEGGINGS), new ItemStack(Items.LEATHER_BOOTS), new ItemStack(Items.CHAINMAIL_BOOTS),
             new ItemStack(Items.DIAMOND_BOOTS), new ItemStack(Items.GOLDEN_BOOTS), new ItemStack(Items.IRON_BOOTS),
-            new ItemStack(Items.NETHERITE_BOOTS)};
+            new ItemStack(Items.NETHERITE_BOOTS), new ItemStack(Items.SHIELD)};
 
     static Potion[] potions = {Potions.NIGHT_VISION, Potions.FIRE_RESISTANCE, Potions.HARMING, Potions.HEALING, Potions.INVISIBILITY,
             Potions.LEAPING, Potions.LUCK, Potions.REGENERATION, Potions.SLOWNESS, Potions.STRENGTH,
@@ -59,6 +59,7 @@ public class LootPool {
         Item item = itemStack.getItem();
         return item instanceof ProjectileWeaponItem || item instanceof TieredItem
                 || item instanceof TridentItem || item instanceof ArmorItem
-                || item instanceof FlintAndSteelItem || item instanceof ShearsItem;
+                || item instanceof FlintAndSteelItem || item instanceof ShearsItem
+                || item instanceof ShieldItem;
     }
 }
