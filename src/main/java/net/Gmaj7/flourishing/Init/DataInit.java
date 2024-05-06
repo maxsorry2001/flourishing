@@ -1,11 +1,14 @@
-package net.Gmaj7.flourishing.eventdispose;
+package net.Gmaj7.flourishing.Init;
 
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.item.alchemy.Potions;
 
-public class LootPool {
-    static ItemStack[] itemStackEquip = {new ItemStack(Items.WOODEN_SHOVEL), new ItemStack(Items.STONE_SHOVEL),
+public class DataInit {
+    public static EquipmentSlot[] equipmentSlots = {EquipmentSlot.MAINHAND, EquipmentSlot.OFFHAND, EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS, EquipmentSlot.FEET};
+
+    public static ItemStack[] itemStackEquip = {new ItemStack(Items.WOODEN_SHOVEL), new ItemStack(Items.STONE_SHOVEL),
             new ItemStack(Items.IRON_SHOVEL), new ItemStack(Items.GOLDEN_SHOVEL),
             new ItemStack(Items.DIAMOND_SHOVEL), new ItemStack(Items.NETHERITE_SHOVEL),
             new ItemStack(Items.WOODEN_PICKAXE), new ItemStack(Items.STONE_PICKAXE),
@@ -32,7 +35,7 @@ public class LootPool {
             new ItemStack(Items.DIAMOND_BOOTS), new ItemStack(Items.GOLDEN_BOOTS), new ItemStack(Items.IRON_BOOTS),
             new ItemStack(Items.NETHERITE_BOOTS), new ItemStack(Items.SHIELD)};
 
-    static Potion[] potions = {Potions.NIGHT_VISION, Potions.FIRE_RESISTANCE, Potions.HARMING, Potions.HEALING, Potions.INVISIBILITY,
+    public static Potion[] potions = {Potions.NIGHT_VISION, Potions.FIRE_RESISTANCE, Potions.HARMING, Potions.HEALING, Potions.INVISIBILITY,
             Potions.LEAPING, Potions.LUCK, Potions.REGENERATION, Potions.SLOWNESS, Potions.STRENGTH,
             Potions.SLOW_FALLING, Potions.SWIFTNESS, Potions.TURTLE_MASTER, Potions.WATER_BREATHING, Potions.WEAKNESS,
             Potions.LONG_FIRE_RESISTANCE, Potions.LONG_INVISIBILITY, Potions.LONG_LEAPING, Potions.LONG_REGENERATION,
@@ -41,7 +44,7 @@ public class LootPool {
             Potions.STRONG_HARMING, Potions.STRONG_HEALING, Potions.STRONG_LEAPING, Potions.STRONG_REGENERATION, Potions.STRONG_SLOWNESS,
             Potions.STRONG_STRENGTH, Potions.STRONG_SWIFTNESS, Potions.STRONG_TURTLE_MASTER, Potions.WATER};
 
-    static ItemStack[] foods = {new ItemStack(Items.APPLE), new ItemStack(Items.GOLDEN_APPLE), new ItemStack(Items.ENCHANTED_GOLDEN_APPLE),
+    public static ItemStack[] foods = {new ItemStack(Items.APPLE), new ItemStack(Items.GOLDEN_APPLE), new ItemStack(Items.ENCHANTED_GOLDEN_APPLE),
             new ItemStack(Items.MELON_SLICE), new ItemStack(Items.SWEET_BERRIES), new ItemStack(Items.GLOW_BERRIES),
             new ItemStack(Items.CHORUS_FRUIT), new ItemStack(Items.CARROT), new ItemStack(Items.GOLDEN_CARROT),
             new ItemStack(Items.POTATO), new ItemStack(Items.BAKED_POTATO), new ItemStack(Items.POISONOUS_POTATO),
@@ -61,5 +64,16 @@ public class LootPool {
                 || item instanceof TridentItem || item instanceof ArmorItem
                 || item instanceof FlintAndSteelItem || item instanceof ShearsItem
                 || item instanceof ShieldItem;
+    }
+
+    public boolean isArmorSlot(EquipmentSlot slot){
+        boolean flag = false;
+        for(int i = 2; i < 6; i++){
+            if(slot == equipmentSlots[i]){
+                flag = true;
+                break;
+            }
+        }
+        return flag;
     }
 }
