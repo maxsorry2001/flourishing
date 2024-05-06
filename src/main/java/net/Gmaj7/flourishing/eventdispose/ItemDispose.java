@@ -1,6 +1,7 @@
 package net.Gmaj7.flourishing.eventdispose;
 
 import net.Gmaj7.flourishing.Flourishing;
+import net.Gmaj7.flourishing.Init.DataInit;
 import net.Gmaj7.flourishing.flourishingEnchantment.FlourishingEnchantments;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -9,19 +10,23 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
-import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.item.alchemy.PotionUtils;
-import net.minecraft.world.item.alchemy.Potions;
+import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.SuspiciousEffectHolder;
+import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.neoforge.event.entity.living.LivingEntityUseItemEvent;
 import net.neoforged.neoforge.event.entity.player.EntityItemPickupEvent;
 import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
+import net.neoforged.neoforge.event.entity.player.PlayerDestroyItemEvent;
+import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 @Mod.EventBusSubscriber(modid = Flourishing.MODID)
@@ -35,7 +40,7 @@ public class ItemDispose {
             boolean b = !a && !event.getItem().getItem().getTag().contains("flourishing.self_write");
             CompoundTag nbtData = new CompoundTag();
             nbtData.putBoolean("flourishing.self_write", true);
-            if (new LootPool().isEquipment(event.getItem().getItem())) {
+            if (new DataInit().isEquipment(event.getItem().getItem())) {
                 if (a || b) {
                     if (a) {
                         event.getItem().getItem().setTag(nbtData);
@@ -44,7 +49,7 @@ public class ItemDispose {
                         event.getItem().getItem().getTag().putBoolean("flourishing.self_write", true);
                     }
                     event.getItem().getItem().setTag(nbtData);
-                    ItemStack itemNew = LootPool.itemStackEquip[new Random().nextInt(LootPool.itemStackEquip.length)];
+                    ItemStack itemNew = DataInit.itemStackEquip[new Random().nextInt(DataInit.itemStackEquip.length)];
                     CompoundTag nbtDataNew = new CompoundTag();
                     nbtDataNew.putBoolean("flourishing.self_write", true);
                     itemNew.setTag(nbtDataNew);
@@ -59,7 +64,7 @@ public class ItemDispose {
                     if (b) {
                         event.getItem().getItem().getTag().putBoolean("flourishing.self_write", true);
                     }
-                    ItemStack itemNew = LootPool.foods[new Random().nextInt(LootPool.foods.length)];
+                    ItemStack itemNew = DataInit.foods[new Random().nextInt(DataInit.foods.length)];
                     if(itemNew.getItem() == Items.SUSPICIOUS_STEW){
                         List<SuspiciousEffectHolder> list = SuspiciousEffectHolder.getAllEffectHolders();
                         SuspiciousStewItem.saveMobEffects(itemNew, list.get(new Random().nextInt(list.size())).getSuspiciousEffects());
@@ -84,7 +89,7 @@ public class ItemDispose {
                             itemNew = new ItemStack(Items.SPLASH_POTION);
                         }
                     }
-                    PotionUtils.setPotion(itemNew, LootPool.potions[new Random().nextInt(LootPool.potions.length)]);
+                    PotionUtils.setPotion(itemNew, DataInit.potions[new Random().nextInt(DataInit.potions.length)]);
                     itemNew.getTag().putBoolean("flourishing.self_write", true);
                     ItemEntity itemEntity = new ItemEntity(level, player.getX(), player.getY(), player.getZ(), itemNew);
                     level.addFreshEntity(itemEntity);
@@ -105,7 +110,7 @@ public class ItemDispose {
                     }
                     else {
                         itemStackNew = new ItemStack(Items.TIPPED_ARROW);
-                        PotionUtils.setPotion(itemStackNew,LootPool.potions[new Random().nextInt(LootPool.potions.length)]);
+                        PotionUtils.setPotion(itemStackNew, DataInit.potions[new Random().nextInt(DataInit.potions.length)]);
                         itemStackNew.getTag().putBoolean("flourishing.self_write", true);
                     }
                     ItemEntity itemEntity = new ItemEntity(level, player.getX(), player.getY(), player.getZ(), itemStackNew);
@@ -141,6 +146,21 @@ public class ItemDispose {
                     }
                 }
             }
+        }
+    }
+
+    @SubscribeEvent
+    public static void company(PlayerDestroyItemEvent event){
+        ItemStack itemStack = event.getOriginal();
+        Player player = event.getEntity();
+        if(EnchantmentHelper.getTagEnchantmentLevel(FlourishingEnchantments.COMPANY.get(), itemStack) > 0){
+            Map<Enchantment, Integer> enchantmentIntegerMap = new HashMap<>();
+            enchantmentIntegerMap.put(FlourishingEnchantments.COMPANY.get(), 1);
+            ItemStack itemStackNew = DataInit.itemStackEquip[new Random().nextInt(30)];
+            itemStackNew.setDamageValue(itemStackNew.getMaxDamage() - 1);
+            EnchantmentHelper.setEnchantments(enchantmentIntegerMap, itemStackNew);
+            ItemEntity itemEntity = new ItemEntity(player.level(), player.getX(), player.getY(), player.getZ(), itemStackNew);
+            player.level().addFreshEntity(itemEntity);
         }
     }
 

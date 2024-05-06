@@ -36,7 +36,7 @@ public class FlourishingEnchantments {
     public static Supplier<Enchantment> CHECK_AND_BALANCE = ENCHANTMENTS.register("check_and_balance",
             () -> new CheckAndBalance(Enchantment.Rarity.COMMON, EnchantmentCategory.ARMOR_CHEST));
     public static Supplier<Enchantment> GRAVE_DIGGER = ENCHANTMENTS.register("grave_digger",
-            () -> new GraveDigger(Enchantment.Rarity.COMMON, EnchantmentCategory.create("grave_digger",
+            () -> new GraveDigger(Enchantment.Rarity.COMMON, EnchantmentCategory.create("grave_digger_can_enchant",
                     trident.or(sword).or(project_weapon))));
     public static Supplier<Enchantment> BANISH = ENCHANTMENTS.register("banish",
             () -> new Banish(Enchantment.Rarity.COMMON, EnchantmentCategory.ARMOR_CHEST));
@@ -54,6 +54,11 @@ public class FlourishingEnchantments {
             () -> new SelfWriting(Enchantment.Rarity.COMMON, EnchantmentCategory.ARMOR_CHEST));
     public static Supplier<Enchantment> PRECISION = ENCHANTMENTS.register("precision",
             () -> new Precision(Enchantment.Rarity.COMMON, EnchantmentCategory.BOW));
+    public static Supplier<Enchantment> PLAN_OF_WIPE = ENCHANTMENTS.register("plan_of_wipe",
+            () -> new PlanOfWipe(Enchantment.Rarity.COMMON, EnchantmentCategory.create("plw_can_enchant",
+                    trident.or(sword).or(project_weapon))));
+    public static Supplier<Enchantment> UNIQUE_PLAN = ENCHANTMENTS.register("unique_plan",
+            () -> new UniquePlan(Enchantment.Rarity.COMMON, EnchantmentCategory.ARMOR_CHEST));
 
     public static void register(IEventBus eventBus){
         ENCHANTMENTS.register(eventBus);

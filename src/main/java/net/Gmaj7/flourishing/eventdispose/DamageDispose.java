@@ -1,6 +1,7 @@
 package net.Gmaj7.flourishing.eventdispose;
 
 import net.Gmaj7.flourishing.Flourishing;
+import net.Gmaj7.flourishing.Init.DataInit;
 import net.Gmaj7.flourishing.flourishingDamageType.FlourishingDamageTypes;
 import net.Gmaj7.flourishing.flourishingEnchantment.FlourishingEnchantments;
 import net.Gmaj7.flourishing.flourishingEffect.FlourishingEffects;
@@ -21,7 +22,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.entity.projectile.ThrownTrident;
 import net.minecraft.world.item.BowItem;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ProjectileWeaponItem;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
@@ -41,7 +41,7 @@ import java.util.Random;
 @Mod.EventBusSubscriber(modid = Flourishing.MODID)
 public class DamageDispose {
 
-    static EquipmentSlot[] equipmentSlots = {EquipmentSlot.MAINHAND, EquipmentSlot.OFFHAND, EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS, EquipmentSlot.FEET};
+
     @SubscribeEvent
     public static void dealBegin(LivingAttackEvent event) {
         if (!event.getEntity().level().isClientSide()) {
@@ -82,10 +82,10 @@ public class DamageDispose {
                 //破军
                 if (armyDestroyer > 0) {
                     for (int i = 0; i < 6; i++) {
-                        ItemStack itemStack = (target.getItemBySlot(equipmentSlots[i]));
+                        ItemStack itemStack = (target.getItemBySlot(DataInit.equipmentSlots[i]));
                         if (!itemStack.isEmpty()) {
                             ItemEntity itemEntity = new ItemEntity(target.level(), target.getX(), target.getY(), target.getZ(), itemStack);
-                            target.setItemSlot(equipmentSlots[i], ItemStack.EMPTY);
+                            target.setItemSlot(DataInit.equipmentSlots[i], ItemStack.EMPTY);
                             target.level().addFreshEntity(itemEntity);
                         }
                     }
@@ -133,12 +133,12 @@ public class DamageDispose {
                 if (armyDestroyer == 2) {
                     int phand = 0,pbody = 0,thand = 0,tbody = 0;
                     for (int i = 0; i < 6; i++) {
-                        if(!((LivingEntity) source).getItemBySlot(equipmentSlots[i]).isEmpty())
+                        if(!((LivingEntity) source).getItemBySlot(DataInit.equipmentSlots[i]).isEmpty())
                         {
                             if(i < 2) phand ++;
                             else pbody++;
                         }
-                        if(!target.getItemBySlot(equipmentSlots[i]).isEmpty()){
+                        if(!target.getItemBySlot(DataInit.equipmentSlots[i]).isEmpty()){
                             if(i < 2) thand ++;
                             else tbody++;
                         }
@@ -194,13 +194,13 @@ public class DamageDispose {
                     ((LivingEntity) source).addEffect(new MobEffectInstance(FlourishingEffects.REPULSE_THE_ENEMY.get(), 600));
                     if(source.isShiftKeyDown() && ((LivingEntity) source).getMaxHealth() > 2){
                         int fliter = new Random().nextInt(6);
-                        ItemStack getItem = target.getItemBySlot(equipmentSlots[fliter]);
+                        ItemStack getItem = target.getItemBySlot(DataInit.equipmentSlots[fliter]);
                         for (int j = 0; j < 5 && getItem.isEmpty(); j++){
                             fliter = (fliter + 1) % 6;
-                            getItem = target.getItemBySlot(equipmentSlots[fliter]);
+                            getItem = target.getItemBySlot(DataInit.equipmentSlots[fliter]);
                         }
                         if (!getItem.isEmpty()){
-                            target.setItemSlot(equipmentSlots[fliter], ItemStack.EMPTY);
+                            target.setItemSlot(DataInit.equipmentSlots[fliter], ItemStack.EMPTY);
                             ItemEntity getItemEntity = new ItemEntity(source.level(), source.getX(), source.getY(), source.getZ(), getItem);
                             source.level().addFreshEntity(getItemEntity);
                             ((LivingEntity) source).addEffect(new MobEffectInstance(FlourishingEffects.BACKWATER.get(), 600, ((LivingEntity) source).hasEffect(FlourishingEffects.BACKWATER.get()) ? ((LivingEntity) source).getEffect(FlourishingEffects.BACKWATER.get()).getAmplifier() + 1: 0));

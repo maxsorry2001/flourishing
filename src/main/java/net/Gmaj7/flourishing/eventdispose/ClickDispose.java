@@ -1,26 +1,36 @@
 package net.Gmaj7.flourishing.eventdispose;
 
+import com.google.common.collect.Maps;
 import net.Gmaj7.flourishing.Flourishing;
+import net.Gmaj7.flourishing.Init.DataInit;
+import net.Gmaj7.flourishing.flourishingDamageType.FlourishingDamageTypes;
 import net.Gmaj7.flourishing.flourishingEffect.FlourishingEffects;
 import net.Gmaj7.flourishing.flourishingEnchantment.FlourishingEnchantments;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.damagesource.DamageType;
+import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
-import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.item.alchemy.PotionUtils;
-import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.SuspiciousEffectHolder;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.phys.AABB;
 import net.neoforged.bus.api.Event;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -29,6 +39,7 @@ import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import net.neoforged.neoforge.event.level.BlockEvent;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 @Mod.EventBusSubscriber(modid = Flourishing.MODID)
@@ -52,7 +63,7 @@ public class ClickDispose {
                         if(flag) itemStack = new ItemStack(Items.ARROW);
                         else{
                             itemStack = new ItemStack(Items.TIPPED_ARROW);
-                            PotionUtils.setPotion(itemStack, LootPool.potions[new Random().nextInt(LootPool.potions.length)]);
+                            PotionUtils.setPotion(itemStack, DataInit.potions[new Random().nextInt(DataInit.potions.length)]);
                         }
                         ItemEntity itemEntity = new ItemEntity(player.level(), player.getX(), player.getY(), player.getZ(), itemStack);
                         player.level().addFreshEntity(itemEntity);
@@ -67,15 +78,15 @@ public class ClickDispose {
                             case 1 -> itemStack = new ItemStack(Items.SPLASH_POTION);
                             case 2 -> itemStack = new ItemStack(Items.LINGERING_POTION);
                         }
-                        PotionUtils.setPotion(itemStack, LootPool.potions[new Random().nextInt(LootPool.potions.length)]);
+                        PotionUtils.setPotion(itemStack, DataInit.potions[new Random().nextInt(DataInit.potions.length)]);
                         ItemEntity itemEntity = new ItemEntity(player.level(), player.getX(), player.getY(), player.getZ(), itemStack);
                         player.level().addFreshEntity(itemEntity);
                     }
                 }
-                else if(new LootPool().isEquipment(player.getItemInHand(event.getHand()))){
+                else if(new DataInit().isEquipment(player.getItemInHand(event.getHand()))){
                     player.setItemInHand(event.getHand(), ItemStack.EMPTY);
                     for (int i = 0; i < count; i++){
-                        ItemStack itemStack = LootPool.itemStackEquip[new Random().nextInt(LootPool.itemStackEquip.length)];
+                        ItemStack itemStack = DataInit.itemStackEquip[new Random().nextInt(DataInit.itemStackEquip.length)];
                         ItemEntity itemEntity = new ItemEntity(player.level(), player.getX(), player.getY(), player.getZ(), itemStack);
                         player.level().addFreshEntity(itemEntity);
                     }
@@ -85,7 +96,7 @@ public class ClickDispose {
                     if(player.getItemInHand(event.getHand()).getMaxStackSize() == 1)
                         count += 1;
                     for (int i = 0; i < count; i++){
-                        ItemStack itemStack = LootPool.foods[new Random().nextInt(LootPool.foods.length)];
+                        ItemStack itemStack = DataInit.foods[new Random().nextInt(DataInit.foods.length)];
                         if(itemStack.getItem() == Items.SUSPICIOUS_STEW){
                             List<SuspiciousEffectHolder> list = SuspiciousEffectHolder.getAllEffectHolders();
                             SuspiciousStewItem.saveMobEffects(itemStack, list.get(new Random().nextInt(list.size())).getSuspiciousEffects());
@@ -140,30 +151,79 @@ public class ClickDispose {
     }
 
     @SubscribeEvent
-    public static void EntityDeal(PlayerInteractEvent.EntityInteract interact){
-        Player player = interact.getEntity();
+    public static void EntityDeal(PlayerInteractEvent.EntityInteract event){
+        Player player = event.getEntity();
         Level level = player.level();
-        Entity target = interact.getTarget();
-        ItemStack itemStack = player.getItemInHand(interact.getHand());
-        if(!level.isClientSide()
-                && EnchantmentHelper.getTagEnchantmentLevel(FlourishingEnchantments.SEE_CLEARLY.get(), itemStack) > 0
-                && target instanceof Monster) {
+        Entity target = event.getTarget();
+        ItemStack itemStack = player.getItemInHand(event.getHand());
+        int powFlag = 0/*灭计*/;
+        boolean seeClearlyFlag = false/*明鉴*/;
+        seeClearlyFlag = EnchantmentHelper.getTagEnchantmentLevel(FlourishingEnchantments.SEE_CLEARLY.get(), itemStack) > 0;
+        powFlag = EnchantmentHelper.getTagEnchantmentLevel(FlourishingEnchantments.PLAN_OF_WIPE.get(), itemStack);
+        //灭计
+        if (powFlag > 0 && target instanceof LivingEntity){
+            int count = 0;
+            for(InteractionHand hand : InteractionHand.values()){
+                if(!((LivingEntity) target).getItemInHand(hand).isEmpty()){
+                    count += 1;
+                }
+            }
+            if(count > 0){
+                itemStack.hurtAndBreak(10, player ,p -> p.broadcastBreakEvent(event.getHand()));
+                int i = new Random().nextInt(2);
+                if(((LivingEntity) target).getItemBySlot(DataInit.equipmentSlots[i]).isEmpty()) i = (i + 1) % 2;
+                switch (powFlag){
+                    case 1 -> {
+                        target.setItemSlot(DataInit.equipmentSlots[i], ItemStack.EMPTY);
+                        uniquePlanDeal(player, (LivingEntity) target);
+                    }
+                    case 2 -> {
+                        ItemEntity itemEntity = new ItemEntity(player.level(), player.getX(), player.getY(), player.getZ(), ((LivingEntity) target).getItemBySlot(DataInit.equipmentSlots[i]));
+                        player.level().addFreshEntity(itemEntity);
+                        target.setItemSlot(DataInit.equipmentSlots[i], ItemStack.EMPTY);
+                        uniquePlanDeal(player, (LivingEntity) target);
+                    }
+                }
+                player.swing(event.getHand());
+            }
+        }
+        //明鉴
+        if (seeClearlyFlag && target instanceof Monster) {
             if(!((Monster) target).getMainHandItem().isEmpty()) ((Monster) target).setItemInHand(InteractionHand.OFF_HAND,((Monster) target).getMainHandItem());
             ((Monster) target).setItemInHand(InteractionHand.MAIN_HAND, itemStack);
-            player.setItemInHand(interact.getHand(), ItemStack.EMPTY);
+            player.setItemInHand(event.getHand(), ItemStack.EMPTY);
+            ((Monster) target).setTarget(null);
             List<Monster> list = level.getEntitiesOfClass(Monster.class, new AABB(target.getX() -20, target.getY() - 3, target.getZ() - 20, target.getX() + 20, target.getY() + 3, target.getZ() + 20));
             for (Monster monster : list){
                 if(monster == target){
-                    ((Monster) target).setTarget(null);
                     continue;
                 }
                 ((Monster) target).setTarget(monster);
                 break;
             }
-            player.swing(interact.getHand(), true);
+            player.swing(event.getHand());
             ((Monster) target).targetSelector.removeGoal(new NearestAttackableTargetGoal<>((Mob) target, Player.class, true));
             ((Monster) target).targetSelector.addGoal( 1,new NearestAttackableTargetGoal<>((Mob) target, Monster.class, true));
             ((Monster) target).addEffect(new MobEffectInstance(MobEffects.DAMAGE_BOOST, 2400, 0));
+        }
+    }
+
+    public static void uniquePlanDeal(Player player, LivingEntity target){
+        int lv = EnchantmentHelper.getTagEnchantmentLevel(FlourishingEnchantments.UNIQUE_PLAN.get(), player.getItemBySlot(EquipmentSlot.CHEST));
+        int targetCount = 0;
+        for (InteractionHand hand : InteractionHand.values()){
+            if(!target.getItemInHand(hand).isEmpty()) targetCount++;
+        }
+        switch (lv){
+            case 0 -> {}
+            case 1 -> {
+                if(targetCount == 0)
+                    target.hurt(new DamageSource(player.level().registryAccess().registryOrThrow(Registries.DAMAGE_TYPE).getHolderOrThrow(DamageTypes.GENERIC), player), target.getMaxHealth() * 0.2F);
+            }
+            case 2 -> {
+
+                target.hurt(new DamageSource(player.level().registryAccess().registryOrThrow(Registries.DAMAGE_TYPE).getHolderOrThrow(DamageTypes.GENERIC), player), target.getMaxHealth() * 0.35F);
+            }
         }
     }
 }
